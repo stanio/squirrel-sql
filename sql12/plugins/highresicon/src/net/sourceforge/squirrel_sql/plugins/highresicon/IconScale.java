@@ -116,6 +116,11 @@ public final class IconScale
       return (int) Math.round(size * getFactor());
    }
 
+   public static double scale(double size)
+   {
+      return size * getFactor();
+   }
+
 }
 
 

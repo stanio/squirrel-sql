@@ -11,7 +11,10 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Polygon;
+import java.awt.RenderingHints;
+import java.awt.Shape;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
@@ -20,6 +23,8 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.geom.Path2D;
+import java.awt.geom.PathIterator;
 
 public class ComboButton extends JToggleButton
 {
@@ -85,6 +90,12 @@ public class ComboButton extends JToggleButton
    protected void paintComponent(Graphics g)
    {
       super.paintComponent(g);
+      g = g.create();
+      if (g instanceof Graphics2D)
+      {
+         ((Graphics2D) g).setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                                           RenderingHints.VALUE_ANTIALIAS_ON);
+      }
 
       Dimension size = getSize();
 
@@ -97,13 +108,60 @@ public class ComboButton extends JToggleButton
          g.setColor(Color.gray);
       }
 
-      Polygon pg = new Polygon();
-      int scaledHeight = Main.getApplication().getIconHandler().iconScale_round(TRI_HEIGHT);
-      int scaledDist = Main.getApplication().getIconHandler().iconScale_round(DIST);
-      pg.addPoint(scaledDist, size.height / 2 - scaledHeight);
-      pg.addPoint(size.width - scaledDist, size.height / 2 - scaledHeight);
-      pg.addPoint(size.width / 2, size.height / 2 + scaledHeight);
-      g.fillPolygon(pg);
+      Path2D pg = new Path2D.Double();
+      double scaledHeight = Main.getApplication().getIconHandler().iconScale_round(TRI_HEIGHT);
+      double scaledDist = Main.getApplication().getIconHandler().iconScale_round(DIST);
+      double y12 = size.height / 2.0 - scaledHeight;
+      pg.moveTo(scaledDist, y12);
+      pg.lineTo(size.width - scaledDist, y12);
+      pg.lineTo(size.width / 2.0, size.height / 2.0 + scaledHeight);
+      pg.closePath();
+
+      if (g instanceof Graphics2D)
+      {
+         ((Graphics2D) g).fill(pg);
+      }
+      else
+      {
+         g.fillPolygon(toPolygon(pg));
+      }
+      g.dispose();
+   }
+
+   private static Polygon toPolygon(Shape shape)
+   {
+      Polygon polygon = new Polygon();
+      PathIterator iter = shape.getPathIterator(null);
+      double[] coords = new double[6];
+
+   done:
+      while (!iter.isDone())
+      {
+         double x, y;
+         switch (iter.currentSegment(coords))
+         {
+            case PathIterator.SEG_CLOSE:
+               break done;
+
+            case PathIterator.SEG_CUBICTO:
+               x = coords[4];
+               y = coords[5];
+               break;
+
+            case PathIterator.SEG_QUADTO:
+               x = coords[2];
+               y = coords[3];
+               break;
+
+            case PathIterator.SEG_MOVETO:
+            case PathIterator.SEG_LINETO:
+            default:
+               x = coords[0];
+               y = coords[1];
+         }
+         polygon.addPoint((int) Math.round(x), (int) Math.round(y));
+      }
+      return polygon;
    }
 
    public void setLinkedButton(AbstractButton actionButton)
