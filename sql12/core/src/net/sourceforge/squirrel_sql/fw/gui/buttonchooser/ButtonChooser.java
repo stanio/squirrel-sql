@@ -13,9 +13,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JToolBar;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
+import java.awt.BorderLayout;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -70,7 +68,7 @@ public class ButtonChooser
       else
       {
          // When NOT in toolbar we style the container ourselves. That is GridBagLayout and to all buttons GUIUtils.styleAsToolbarButton() is applied.
-         _container = new JPanel(new GridBagLayout());
+         _container = new JPanel(new BorderLayout());
          GUIUtils.styleAsToolbarButton(_btnCombo);
       }
       createUI();
@@ -115,26 +113,7 @@ public class ButtonChooser
 
       displayAsCurrentButton(_btnUndefinedDefault);
 
-      if(_inToolBar)
-      {
-         _container.add(_btnCombo);
-      }
-      else
-      {
-         // When NOT in toolbar we style the container ourselves. That is GridBagLayout and to all buttons GUIUtils.styleAsToolbarButton() is applied.
-         GridBagConstraints gbc;
-
-         if(_orientation == ButtonChooserOrientation.RIGHT)
-         {
-            gbc = new GridBagConstraints(1,0,1,1,0,0, GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0,0,0,2), 0,0);
-         }
-         else
-         {
-            gbc = new GridBagConstraints(0,0,1,1,0,0, GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0,0,0,0), 0,0);
-         }
-
-         _container.add(_btnCombo, gbc);
-      }
+      _container.add(_btnCombo, BorderLayout.LINE_END);
    }
 
    /**
@@ -199,34 +178,7 @@ public class ButtonChooser
 
       _btnCombo.setLinkedButton(_btnCurrent);
 
-      if(_inToolBar)
-      {
-         if(_orientation == ButtonChooserOrientation.RIGHT)
-         {
-            _container.add(_btnCurrent, 0);
-         }
-         else
-         {
-            _container.add(_btnCurrent);
-         }
-      }
-      else
-      {
-         // When NOT in toolbar we style the container ourselves. That is GridBagLayout and to all buttons GUIUtils.styleAsToolbarButton() is applied.
-         GridBagConstraints gbc;
-
-         if(_orientation == ButtonChooserOrientation.RIGHT)
-         {
-            gbc = new GridBagConstraints(0,0,1,1,1,1, GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0,0,0,0), 0,0);
-            _container.add(_btnCurrent, gbc, 0);
-         }
-         else
-         {
-            gbc = new GridBagConstraints(1,0,1,1,1,1, GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0,0,0,0), 0,0);
-            _container.add(_btnCurrent, gbc);
-         }
-      }
-
+      _container.add(_btnCurrent, BorderLayout.CENTER, 0);
       _container.revalidate();
       _container.repaint();
 
