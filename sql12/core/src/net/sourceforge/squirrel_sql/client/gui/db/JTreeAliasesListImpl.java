@@ -29,6 +29,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTree;
 import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
+import javax.swing.LookAndFeel;
 import javax.swing.SwingUtilities;
 import javax.swing.TransferHandler;
 import javax.swing.event.ListDataEvent;
@@ -100,6 +101,12 @@ public class JTreeAliasesListImpl implements IAliasesList, IAliasTreeInterface
       _aliasDragState = new AliasDragState(_tree);
 
       _tree.setCellRenderer(new AliasTreeCellRenderer(_aliasPasteState, _aliasDragState));
+      Runnable adjustRowHeight = () -> {
+         if (_tree.getRowHeight() > 0)
+            LookAndFeel.installProperty(_tree, "rowHeight", Main.getApplication().getIconHandler().iconScale_ceil(_tree.getRowHeight()));
+      };
+      adjustRowHeight.run();
+      _tree.addPropertyChangeListener("UI", evt -> adjustRowHeight.run());
 
       initCancelCutAction();
 
