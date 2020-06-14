@@ -152,4 +152,12 @@ public class SquirrelIconImage extends MultiResolutionCachedImage
       return loader.getImage();
    }
 
+   static
+   {
+       if (Boolean.parseBoolean(System.getProperty("squirrel.icon.scaling.lnf", "true")))
+       {
+           ScaledIconResource.install();
+       }
+   }
+
 }

@@ -19,6 +19,7 @@ import net.sourceforge.squirrel_sql.fw.xml.XMLBeanWriter;
 
 import javax.activation.DataHandler;
 import javax.swing.*;
+import javax.swing.LookAndFeel;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -86,6 +87,12 @@ public class JTreeAliasesListImpl implements IAliasesList, IAliasTreeInterface
       _aliasDragState = new AliasDragState(_tree);
 
       _tree.setCellRenderer(new AliasTreeCellRenderer(_aliasPasteState, _aliasDragState));
+      Runnable adjustRowHeight = () -> {
+         if (_tree.getRowHeight() > 0)
+            LookAndFeel.installProperty(_tree, "rowHeight", Main.getApplication().getIconHandler().iconScale_ceil(_tree.getRowHeight()));
+      };
+      adjustRowHeight.run();
+      _tree.addPropertyChangeListener("UI", evt -> adjustRowHeight.run());
 
       initCancelCutAction();
 
