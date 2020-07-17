@@ -290,6 +290,7 @@ public abstract class Resources implements IResources
 		try
 		{
 			icon = getIcon(key, ActionProperties.DISABLED_IMAGE);
+			Main.getApplication().getIconHandler().setDisabledIcon(icon);
 			action.putValue(BaseAction.IBaseActionPropertyNames.DISABLED_ICON, icon);
 		} catch (MissingResourceException ignore)
 		{

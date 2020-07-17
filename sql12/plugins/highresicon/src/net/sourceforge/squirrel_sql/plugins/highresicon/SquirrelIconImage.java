@@ -39,9 +39,16 @@ public class SquirrelIconImage extends MultiResolutionCachedImage
    private final URL sourceLocation;
    private final Image sourceImage;
    private final boolean iconImage;
+   private final boolean grayFilter;
 
    protected SquirrelIconImage(URL sourceLocation, Image sourceImage,
                                int baseWidth, int baseHeight)
+   {
+      this(sourceLocation, sourceImage, baseWidth, baseHeight, false);
+   }
+
+   private SquirrelIconImage(URL sourceLocation, Image sourceImage,
+                             int baseWidth, int baseHeight, boolean grayFilter)
    {
       super(baseWidth, baseHeight);
       this.sourceLocation = sourceLocation;
@@ -50,6 +57,7 @@ public class SquirrelIconImage extends MultiResolutionCachedImage
       // don't scale adjust larger images which might not be icons.
       this.iconImage = baseWidth > 0 && baseWidth <= 64
                        && baseHeight > 0 && baseHeight <= 64;
+      this.grayFilter = grayFilter;
    }
 
    public static SquirrelIconImage of(URL sourceLocation)
@@ -62,9 +70,9 @@ public class SquirrelIconImage extends MultiResolutionCachedImage
       return new SquirrelIconImage(sourceLocation, sourceImage, baseWidth, baseHeight);
    }
 
-   public SquirrelIconImage withSource(Image anotherSource)
+   SquirrelIconImage withGrayFilter()
    {
-      return new SquirrelIconImage(sourceLocation, anotherSource, baseWidth, baseHeight);
+      return new SquirrelIconImage(sourceLocation, sourceImage, baseWidth, baseHeight, true);
    }
 
    protected URL getSourceLocation()
@@ -119,6 +127,10 @@ public class SquirrelIconImage extends MultiResolutionCachedImage
       if (base instanceof MultiResolutionImage)
       {
          base = ((MultiResolutionImage) base).getResolutionVariant(width, height);
+      }
+      if (grayFilter)
+      {
+         base = GrayFilter.getDisabledImage(base);
       }
       return imageScaler.scale(base, width, height);
    }

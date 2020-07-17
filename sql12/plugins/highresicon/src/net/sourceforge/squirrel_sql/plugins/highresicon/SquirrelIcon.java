@@ -7,6 +7,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.lang.ref.ReferenceQueue;
 import java.lang.ref.WeakReference;
+import java.net.URI;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -18,6 +19,8 @@ import java.util.function.Supplier;
  */
 public class SquirrelIcon extends ImageIcon
 {
+   private boolean disabledIcon;
+
    public SquirrelIcon(URL location)
    {
       super(createImage(location));
@@ -26,6 +29,17 @@ public class SquirrelIcon extends ImageIcon
    private static Image createImage(URL location)
    {
       return CachedImage.of(location);
+   }
+
+   void setDisabledIcon()
+   {
+      if (disabledIcon)
+         return;
+
+      SquirrelIconImage image = (SquirrelIconImage) getImage();
+      URI key = URI.create("disabled:" + image.getSourceLocation());
+      setImage(CachedImage.of(key, () -> image.withGrayFilter()));
+      disabledIcon = true;
    }
 
    private void writeObject(ObjectOutputStream out)
@@ -40,6 +54,7 @@ public class SquirrelIcon extends ImageIcon
       {
          out.writeObject(null);
       }
+      out.writeBoolean(disabledIcon);
    }
 
    private void readObject(ObjectInputStream in)
@@ -49,6 +64,10 @@ public class SquirrelIcon extends ImageIcon
       if (baseLocation != null)
       {
          super.setImage(createImage(baseLocation));
+      }
+      if (in.readBoolean())
+      {
+         setDisabledIcon();
       }
    }
 
