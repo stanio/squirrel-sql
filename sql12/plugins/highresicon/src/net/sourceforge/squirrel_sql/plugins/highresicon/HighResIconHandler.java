@@ -2,6 +2,7 @@ package net.sourceforge.squirrel_sql.plugins.highresicon;
 
 import net.sourceforge.squirrel_sql.fw.resources.IconHandler;
 
+import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import java.net.URL;
 
@@ -11,6 +12,15 @@ public class HighResIconHandler implements IconHandler
    public ImageIcon createImageIcon(URL iconUrl)
    {
       return new SquirrelIcon(iconUrl);
+   }
+
+   @Override
+   public void setDisabledIcon(Icon icon)
+   {
+      if (icon instanceof SquirrelIcon)
+      {
+         ((SquirrelIcon) icon).setDisabledIcon();
+      }
    }
 
    @Override
