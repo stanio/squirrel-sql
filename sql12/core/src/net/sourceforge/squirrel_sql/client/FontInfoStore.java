@@ -23,6 +23,8 @@ import net.sourceforge.squirrel_sql.fw.gui.FontInfo;
 import javax.swing.UIManager;
 import java.awt.Component;
 import java.awt.Font;
+import java.awt.font.FontRenderContext;
+import java.awt.font.TextLayout;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -33,6 +35,8 @@ import java.lang.ref.WeakReference;
  */
 public class FontInfoStore
 {
+	private static final double STATUS_SIZE_FACTOR = 0.9;
+
 	/** Default one. */
 	private FontInfo _defaultFontInfo = new FontInfo();
 
@@ -69,13 +73,23 @@ public class FontInfoStore
 		if (tmp != null)
 		{
 			FontInfo oldValue = getStatusBarFontInfo();
-			double smallerSize = tmp.getSize() * 0.85;
+			double smallerSize = tmp.getSize() * STATUS_SIZE_FACTOR * fontSizeAdjust(tmp);
 			Font font = tmp.deriveFont(Font.BOLD, Math.max(Math.round(smallerSize), 10f));
 			_defaultFontInfo = new FontInfo(font);
 
 			if (_changeSupport != null)
 				_changeSupport.fireIndexedPropertyChange("statusBarFontInfo", 0, oldValue, getStatusBarFontInfo());
 		}
+	}
+
+	/**
+	 * <pre><var>font-size</var> / (2 * <var>x-height</var>)</pre>
+	 */
+	private static double fontSizeAdjust(Font font)
+	{
+		FontRenderContext fc = new FontRenderContext(null, false, false);
+		TextLayout layout = new TextLayout("x", font, fc);
+		return font.getSize() / (2 * layout.getBounds().getHeight());
 	}
 
 	/**
