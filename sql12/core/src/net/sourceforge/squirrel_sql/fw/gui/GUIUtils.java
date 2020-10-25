@@ -26,12 +26,14 @@ import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.FontMetrics;
 import java.awt.Frame;
+import java.awt.Graphics;
 import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.Image;
 import java.awt.Insets;
 import java.awt.MouseInfo;
 import java.awt.Point;
@@ -48,6 +50,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.geom.Rectangle2D;
+import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyVetoException;
 import java.lang.reflect.InvocationTargetException;
@@ -59,6 +62,8 @@ import javax.swing.AbstractAction;
 import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
@@ -1362,6 +1367,20 @@ public class GUIUtils
       {
          tabbedPane.setIconAt(index, null);
       }
+   }
+
+   public static Image getIconImage(Icon icon)
+   {
+      if (icon instanceof ImageIcon)
+      {
+         return ((ImageIcon) icon).getImage();
+      }
+
+      BufferedImage image = new BufferedImage(icon.getIconWidth(), icon.getIconHeight(), BufferedImage.TYPE_INT_ARGB);
+      Graphics g = image.getGraphics();
+      icon.paintIcon(null, g, 0, 0);
+      g.dispose();
+      return image;
    }
 
 }

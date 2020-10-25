@@ -41,7 +41,7 @@ import net.sourceforge.squirrel_sql.fw.util.log.LoggerController;
 
 import javax.swing.Action;
 import javax.swing.BorderFactory;
-import javax.swing.ImageIcon;
+import javax.swing.Icon;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -51,6 +51,7 @@ import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import java.awt.BorderLayout;
 import java.awt.Container;
+import java.awt.Image;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
@@ -397,13 +398,14 @@ public class MainFrame extends JFrame
 	}
 
 	private void initApplicationIcon(SquirrelResources rsrc) {
-		final ImageIcon icon = rsrc.getIcon(SquirrelResources.IImageNames.APPLICATION_ICON);
+		final Icon icon = rsrc.getIcon(SquirrelResources.IImageNames.APPLICATION_ICON);
 		if (icon != null)
 		{
-			setIconImage(icon.getImage());
+			final Image iconImage = GUIUtils.getIconImage(icon);
+			setIconImage(iconImage);
 			AppleApplicationTools appleApplicationTools = new AppleApplicationTools();
 			if (appleApplicationTools.isAppleEnvironment()) {
-				appleApplicationTools.setDockIconImage(icon.getImage());
+				appleApplicationTools.setDockIconImage(iconImage);
 			}
 		}
 		else

@@ -4,6 +4,7 @@ import net.sourceforge.squirrel_sql.client.Main;
 import net.sourceforge.squirrel_sql.client.resources.SquirrelResources;
 import net.sourceforge.squirrel_sql.client.session.mainpanel.overview.datascale.DataScale;
 import net.sourceforge.squirrel_sql.client.session.mainpanel.overview.datascale.DataScaleTable;
+import net.sourceforge.squirrel_sql.fw.gui.GUIUtils;
 import net.sourceforge.squirrel_sql.fw.util.StringManager;
 import net.sourceforge.squirrel_sql.fw.util.StringManagerFactory;
 import org.jfree.chart.ChartPanel;
@@ -18,7 +19,7 @@ import org.jfree.chart.title.LegendTitle;
 import org.jfree.chart.ui.HorizontalAlignment;
 import org.jfree.chart.ui.RectangleEdge;
 
-import javax.swing.ImageIcon;
+import javax.swing.Icon;
 import javax.swing.JFrame;
 import java.awt.Font;
 import java.awt.Frame;
@@ -74,10 +75,10 @@ public class ChartHandler
 
          JFrame f = new JFrame(title);
 
-         final ImageIcon icon = Main.getApplication().getResources().getIcon(SquirrelResources.IImageNames.APPLICATION_ICON);
+         final Icon icon = Main.getApplication().getResources().getIcon(SquirrelResources.IImageNames.APPLICATION_ICON);
          if (icon != null)
          {
-            f.setIconImage(icon.getImage());
+            f.setIconImage(GUIUtils.getIconImage(icon));
          }
 
 

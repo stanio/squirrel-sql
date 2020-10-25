@@ -12,7 +12,7 @@ import net.sourceforge.squirrel_sql.plugins.graph.GraphPlugin;
 import net.sourceforge.squirrel_sql.plugins.graph.GraphPluginResources;
 import net.sourceforge.squirrel_sql.plugins.graph.link.CopyGraphAction;
 
-import javax.swing.ImageIcon;
+import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JDialog;
@@ -209,11 +209,11 @@ public class GraphWindowController
 
       }
 
-      ImageIcon appIcon = _session.getApplication().getResources().getIcon(SquirrelResources.IImageNames.APPLICATION_ICON);
+      Icon appIcon = _session.getApplication().getResources().getIcon(SquirrelResources.IImageNames.APPLICATION_ICON);
 
       _frameWindow = new JFrame();
       _frameWindow.setTitle(title);
-      _frameWindow.setIconImage(appIcon.getImage());
+      _frameWindow.setIconImage(GUIUtils.getIconImage(appIcon));
       _frameWindow.getContentPane().setLayout(new GridLayout(1, 1));
       _frameWindow.getContentPane().add(_contentPanel);
       _frameWindow.setBounds(bounds);
