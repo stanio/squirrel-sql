@@ -25,7 +25,7 @@ import net.sourceforge.squirrel_sql.fw.util.StringManagerFactory;
 import net.sourceforge.squirrel_sql.fw.util.log.ILoggerListener;
 import net.sourceforge.squirrel_sql.fw.util.log.LoggerController;
 
-import javax.swing.ImageIcon;
+import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -163,7 +163,7 @@ public class LogPanel extends JPanel
    {
       setLayout(new BorderLayout(5, 0));
 
-      ImageIcon viewLogsIcon = _resources.getIcon(SquirrelResources.IImageNames.LOGS);
+      Icon viewLogsIcon = _resources.getIcon(SquirrelResources.IImageNames.LOGS);
       _btnViewLogs.setIcon(viewLogsIcon);
 
       Dimension prefButtonSize = new Dimension(viewLogsIcon.getIconWidth(), viewLogsIcon.getIconHeight());

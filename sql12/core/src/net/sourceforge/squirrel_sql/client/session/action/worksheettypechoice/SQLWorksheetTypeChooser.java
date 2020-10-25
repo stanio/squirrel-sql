@@ -8,7 +8,7 @@ import net.sourceforge.squirrel_sql.fw.util.StringManager;
 import net.sourceforge.squirrel_sql.fw.util.StringManagerFactory;
 
 import javax.swing.AbstractButton;
-import javax.swing.ImageIcon;
+import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 
@@ -43,8 +43,8 @@ public class SQLWorksheetTypeChooser
    private void initActionAndListeners()
    {
       SquirrelResources rsrc = Main.getApplication().getResources();
-      ImageIcon iconAddSqlTab = rsrc.getIcon(SquirrelResources.IImageNames.ADD_TAB);
-      ImageIcon iconNewSqlWorkSheet = rsrc.getIcon(SquirrelResources.IImageNames.NEW_SQL_WORKSHEET);
+      Icon iconAddSqlTab = rsrc.getIcon(SquirrelResources.IImageNames.ADD_TAB);
+      Icon iconNewSqlWorkSheet = rsrc.getIcon(SquirrelResources.IImageNames.NEW_SQL_WORKSHEET);
 
       String textNewSqlWorkSheet = s_stringMgr.getString("SQLWorksheetTypeChooser.newSqlWorkSheet") + ActionUtil.getAcceleratorString(rsrc, _action);
       String textAddSqlTab = s_stringMgr.getString("SQLWorksheetTypeChooser.newSqlTab") + ActionUtil.getAcceleratorString(rsrc, _action);

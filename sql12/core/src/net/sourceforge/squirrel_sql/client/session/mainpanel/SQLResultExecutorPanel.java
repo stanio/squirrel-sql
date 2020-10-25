@@ -463,7 +463,7 @@ public class SQLResultExecutorPanel extends JPanel implements ISQLResultExecutor
       _stickyTab = (IResultTab) _tabbedExecutionsPanel.getSelectedComponent();
       int selectedIndex = _tabbedExecutionsPanel.getSelectedIndex();
 
-      ImageIcon icon = _tabIconManager.getStickyIcon();
+      Icon icon = _tabIconManager.getStickyIcon();
 
       _tabAdder.setIconAt(selectedIndex, icon);
    }
@@ -741,7 +741,7 @@ public class SQLResultExecutorPanel extends JPanel implements ISQLResultExecutor
 
 
       int indexToReplace = -1;
-      ImageIcon tabIcon = null;
+      Icon tabIcon = null;
 
       boolean replaceStickyTab = null != _stickyTab && (null == resultTabToReplace || _stickyTab == resultTabToReplace);
 

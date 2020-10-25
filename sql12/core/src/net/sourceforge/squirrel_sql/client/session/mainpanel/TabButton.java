@@ -17,7 +17,7 @@ public class TabButton extends JButton
       this((Action) null);
    }
 
-   public TabButton(ImageIcon icon)
+   public TabButton(Icon icon)
    {
       this((Action) null);
       setIcon(icon);

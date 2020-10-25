@@ -8,6 +8,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowFocusListener;
 import java.util.ArrayList;
+import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -218,7 +219,7 @@ public class TabWindowController implements DockTabDesktopPaneHolder
       {
          buf = new ArrayList<SmallTabButton>();
          String toolTipText = s_stringMgr.getString("docktabdesktop.TabWindowController.moveTabBackToMainWin");
-         ImageIcon icon = _app.getResources().getIcon(SquirrelResources.IImageNames.TAB_DETACH_SMALL_REVERT);
+         Icon icon = _app.getResources().getIcon(SquirrelResources.IImageNames.TAB_DETACH_SMALL_REVERT);
          btnMoveTabBackToMainWin = new SmallTabButton(toolTipText, icon, MoveTabBackToMainWinMarker.class);
          buf.add(btnMoveTabBackToMainWin);
          buf.addAll(externalButtons);

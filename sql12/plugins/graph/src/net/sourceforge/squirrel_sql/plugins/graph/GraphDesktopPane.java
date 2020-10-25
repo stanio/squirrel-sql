@@ -4,7 +4,7 @@ import net.sourceforge.squirrel_sql.client.IApplication;
 import net.sourceforge.squirrel_sql.client.gui.desktopcontainer.ScrollableDesktopPane;
 import net.sourceforge.squirrel_sql.fw.gui.RectangleSelectionHandler;
 
-import javax.swing.ImageIcon;
+import javax.swing.Icon;
 import javax.swing.RepaintManager;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -41,12 +41,12 @@ public class GraphDesktopPane extends ScrollableDesktopPane implements GraphPrin
    private double _formatHeightInPixel;
    private double _formatScale;
    private boolean _isPrinting;
-   private ImageIcon _desktopImage;
+   private Icon _desktopImage;
    private boolean _showStartupImage;
    //
    /////////////////////////////////////////////////////////
 
-   public GraphDesktopPane(IApplication app, ImageIcon desktopImage, RectangleSelectionHandler rectangleSelectionHandler)
+   public GraphDesktopPane(IApplication app, Icon desktopImage, RectangleSelectionHandler rectangleSelectionHandler)
    {
       super(app);
 

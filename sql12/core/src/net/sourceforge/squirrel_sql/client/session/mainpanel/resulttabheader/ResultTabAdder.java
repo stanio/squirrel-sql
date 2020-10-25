@@ -1,6 +1,6 @@
 package net.sourceforge.squirrel_sql.client.session.mainpanel.resulttabheader;
 
-import javax.swing.ImageIcon;
+import javax.swing.Icon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
@@ -20,7 +20,7 @@ public class ResultTabAdder
       return add(title, null, panel, null);
    }
 
-   public int add(String title, ImageIcon tabIcon, JPanel tabPanel, String toolTip)
+   public int add(String title, Icon tabIcon, JPanel tabPanel, String toolTip)
    {
       _tabbedExecutionsPanel.addTab(title, tabIcon, tabPanel, toolTip);
 
@@ -32,7 +32,7 @@ public class ResultTabAdder
       return tabIx;
    }
 
-   public int insert(String title, ImageIcon tabIcon, JPanel tabPanel, String toolTip, int indexToReplace)
+   public int insert(String title, Icon tabIcon, JPanel tabPanel, String toolTip, int indexToReplace)
    {
       _tabbedExecutionsPanel.insertTab(title, tabIcon, tabPanel, toolTip, indexToReplace);
       int tabIx = _tabbedExecutionsPanel.indexOfComponent(tabPanel);
@@ -41,12 +41,12 @@ public class ResultTabAdder
       return tabIx;
    }
 
-   private ResultTabComponent createTabComponent(String title, ImageIcon tabIcon)
+   private ResultTabComponent createTabComponent(String title, Icon tabIcon)
    {
       return new ResultTabComponent(new JLabel(title, tabIcon, SwingConstants.LEFT));
    }
 
-   public void setIconAt(int tabIx, ImageIcon icon)
+   public void setIconAt(int tabIx, Icon icon)
    {
       if(_tabbedExecutionsPanel.getTabComponentAt(tabIx) instanceof ResultTabComponent)
       {

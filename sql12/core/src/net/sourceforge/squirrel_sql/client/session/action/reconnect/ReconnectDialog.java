@@ -7,7 +7,7 @@ import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
 import javax.swing.BorderFactory;
-import javax.swing.ImageIcon;
+import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JDialog;
@@ -42,8 +42,8 @@ public class ReconnectDialog extends JDialog
 
    private JPanel _collapsedPanel;
    private JPanel _uncollapsedPanel;
-   private ImageIcon _iconPlus = Main.getApplication().getResources().getIcon(SquirrelResources.IImageNames.PLUS);
-   private ImageIcon _iconMinus = Main.getApplication().getResources().getIcon(SquirrelResources.IImageNames.MINUS);
+   private Icon _iconPlus = Main.getApplication().getResources().getIcon(SquirrelResources.IImageNames.PLUS);
+   private Icon _iconMinus = Main.getApplication().getResources().getIcon(SquirrelResources.IImageNames.MINUS);
 
    public ReconnectDialog()
    {

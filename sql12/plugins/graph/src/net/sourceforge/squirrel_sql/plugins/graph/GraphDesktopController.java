@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.TooManyListenersException;
 import java.util.Vector;
 import java.util.stream.Collectors;
-import javax.swing.ImageIcon;
+import javax.swing.Icon;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JInternalFrame;
 import javax.swing.JMenuItem;
@@ -98,7 +98,7 @@ public class GraphDesktopController
       _plugin = plugin;
       _graphPluginResources = new GraphPluginResources(_plugin);
 
-      ImageIcon startUpImage = null;
+      Icon startUpImage = null;
 
       if (showDndDesktopImageAtStartup)
       {
@@ -271,7 +271,7 @@ public class GraphDesktopController
 		_mnuShowQualifiedTableNames = new JCheckBoxMenuItem(s_stringMgr.getString("graph.showQualifiedTableNames"));
       _mnuShowQualifiedTableNames.addActionListener(e -> onShowQualifiedTableNames());
 
-      ImageIcon toWInIcon = _graphPluginResources.getIcon(GraphPluginResources.IKeys.TO_WINDOW);
+      Icon toWInIcon = _graphPluginResources.getIcon(GraphPluginResources.IKeys.TO_WINDOW);
       _mnuToggleWindowTab = new JMenuItem(s_stringMgr.getString("graph.toggleWindowTab"), toWInIcon);
       _mnuToggleWindowTab.addActionListener(e -> onToggleWindowTab());
 

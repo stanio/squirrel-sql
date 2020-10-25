@@ -238,7 +238,7 @@ public class DatabaseObjectType implements IHasIdentifier, Serializable
 
    private static DatabaseObjectType createNewDatabaseObjectTypeI18n(String key, String imageName, boolean isContainerNode)
    {
-      ImageIcon icon = null;
+      Icon icon = null;
 
       if (null != imageName)
       {

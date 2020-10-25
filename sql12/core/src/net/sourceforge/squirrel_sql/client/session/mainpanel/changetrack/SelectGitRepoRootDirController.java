@@ -8,7 +8,7 @@ import net.sourceforge.squirrel_sql.fw.gui.MultipleLineLabel;
 import net.sourceforge.squirrel_sql.fw.util.StringManager;
 import net.sourceforge.squirrel_sql.fw.util.StringManagerFactory;
 
-import javax.swing.ImageIcon;
+import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
@@ -102,7 +102,7 @@ public class SelectGitRepoRootDirController
       _tree.expandPath(new TreePath(path));
       _tree.setSelectionPath(new TreePath(path));
 
-      ImageIcon icon = Main.getApplication().getResources().getIcon(SquirrelResources.IImageNames.DIR_GIF);
+      Icon icon = Main.getApplication().getResources().getIcon(SquirrelResources.IImageNames.DIR_GIF);
       ((DefaultTreeCellRenderer)_tree.getCellRenderer()).setClosedIcon(icon);
       ((DefaultTreeCellRenderer)_tree.getCellRenderer()).setOpenIcon(icon);
       ((DefaultTreeCellRenderer)_tree.getCellRenderer()).setLeafIcon(icon);

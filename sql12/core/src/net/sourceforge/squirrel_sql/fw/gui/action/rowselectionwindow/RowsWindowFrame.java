@@ -119,13 +119,13 @@ public class RowsWindowFrame extends JDialog
       pnlEast.add(GUIUtils.setPreferredWidth(GUIUtils.setPreferredHeight(markDuplicatesChooserController.getComponent(), GUIUtils.TAB_BUTTON_SIDE_LENGTH),45), gbc);
 
       gbc = new GridBagConstraints(2,0,1,1,0,0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(3,1,0,3), 0,0);
-      ImageIcon iconFindColumn = Main.getApplication().getResources().getIcon(SquirrelResources.IImageNames.FIND_COLUMN);
+      Icon iconFindColumn = Main.getApplication().getResources().getIcon(SquirrelResources.IImageNames.FIND_COLUMN);
       _btnToggleFindColumn = GUIUtils.styleAsTabButton(new TabButton(iconFindColumn));
       _btnToggleFindColumn.addActionListener(e -> onFindColumn());
       pnlEast.add(_btnToggleFindColumn, gbc);
 
       gbc = new GridBagConstraints(3,0,1,1,0,0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(3,1,0,3), 0,0);
-      ImageIcon iconFind = Main.getApplication().getResources().getIcon(SquirrelResources.IImageNames.FIND);
+      Icon iconFind = Main.getApplication().getResources().getIcon(SquirrelResources.IImageNames.FIND);
       _btnToggleFind = GUIUtils.styleAsTabButton(new TabButton(iconFind));
       _btnToggleFind.addActionListener(e -> onFind());
       pnlEast.add(_btnToggleFind, gbc);

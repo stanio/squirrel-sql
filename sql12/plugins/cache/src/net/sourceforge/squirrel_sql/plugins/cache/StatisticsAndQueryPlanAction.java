@@ -14,7 +14,7 @@ import net.sourceforge.squirrel_sql.fw.util.Utilities;
 import net.sourceforge.squirrel_sql.fw.util.log.ILogger;
 import net.sourceforge.squirrel_sql.fw.util.log.LoggerController;
 
-import javax.swing.ImageIcon;
+import javax.swing.Icon;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 import java.awt.GridLayout;
@@ -67,7 +67,7 @@ public class StatisticsAndQueryPlanAction extends SquirrelAction implements ISQL
 
          CustomResultPanel resultPanel = new CustomResultPanel(new GridLayout(1,1));
 
-         ImageIcon icon = _resources.getIcon(CachePluginResources.IKeys.INTERSYSTEMS_CAC);
+         Icon icon = _resources.getIcon(CachePluginResources.IKeys.INTERSYSTEMS_CAC);
          _sqlPanelAPI.getSQLResultExecuter().addCustomResult(resultPanel, s_stringMgr.getString("StatisticsAndQueryPlanAction.tab.title"), icon);
 
          DataSetTextArea dataSetTextArea = new DataSetTextArea(s_stringMgr.getString("StatisticsAndQueryPlanAction.reading.stats.for.sql", cleanedSQL));

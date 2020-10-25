@@ -28,7 +28,7 @@ import net.sourceforge.squirrel_sql.fw.util.StringManager;
 import net.sourceforge.squirrel_sql.fw.util.StringManagerFactory;
 import net.sourceforge.squirrel_sql.fw.util.Utilities;
 
-import javax.swing.ImageIcon;
+import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
@@ -68,7 +68,7 @@ public class MemoryPanel extends JPanel
 		_btnGarbage.setToolTipText(s_stringMgr.getString("MemoryPanel.runGC"));
 		_btnGarbage.setBorder(null);
 
-		ImageIcon trashIcon = _app.getResources().getIcon(SquirrelResources.IImageNames.TRASH);
+		Icon trashIcon = _app.getResources().getIcon(SquirrelResources.IImageNames.TRASH);
 		_btnGarbage.setIcon(trashIcon);
 
 		Dimension prefButtonSize = new Dimension(3 * trashIcon.getIconWidth() / 2, trashIcon.getIconHeight());

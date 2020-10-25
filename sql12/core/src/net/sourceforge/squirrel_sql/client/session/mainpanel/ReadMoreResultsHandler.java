@@ -19,7 +19,7 @@ public class ReadMoreResultsHandler
 
    private ISession _session;
    private final JLabel _lblLoading;
-   private final ImageIcon _loadingGif;
+   private final Icon _loadingGif;
    private ExecutorService _executorService;
    private Future<SwingWorker<SwingWorker, Object>> _future;
 

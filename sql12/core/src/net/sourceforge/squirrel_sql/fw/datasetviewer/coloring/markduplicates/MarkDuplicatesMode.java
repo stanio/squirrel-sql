@@ -46,11 +46,11 @@ public enum MarkDuplicatesMode
       }
    }
 
-   private final ImageIcon _icon;
+   private final Icon _icon;
    private final String _text;
    private final String _toolTip;
 
-   MarkDuplicatesMode(ImageIcon icon, String text, String toolTip)
+   MarkDuplicatesMode(Icon icon, String text, String toolTip)
    {
 
       _icon = icon;
