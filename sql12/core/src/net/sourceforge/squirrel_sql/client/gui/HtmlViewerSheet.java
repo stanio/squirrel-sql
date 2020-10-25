@@ -21,11 +21,12 @@ import java.awt.BorderLayout;
 import java.awt.Container;
 import java.net.URL;
 
-import javax.swing.ImageIcon;
+import javax.swing.Icon;
 import javax.swing.JFrame;
 
 import net.sourceforge.squirrel_sql.client.IApplication;
 import net.sourceforge.squirrel_sql.client.resources.SquirrelResources;
+import net.sourceforge.squirrel_sql.fw.gui.GUIUtils;
 /**
  * This sheet shows the contents of a HTML file.
  *
@@ -76,10 +77,10 @@ public class HtmlViewerSheet extends JFrame
 		contentPane.setLayout(new BorderLayout());
 		contentPane.add(new HtmlViewerPanel(_documentURL), BorderLayout.CENTER);
 		final SquirrelResources rsrc = _app.getResources();
-		final ImageIcon icon = rsrc.getIcon(SquirrelResources.IImageNames.APPLICATION_ICON);
+		final Icon icon = rsrc.getIcon(SquirrelResources.IImageNames.APPLICATION_ICON);
 		if (icon != null)
 		{
-			setIconImage(icon.getImage());
+			setIconImage(GUIUtils.getIconImage(icon));
 		}
 		pack();
 	}

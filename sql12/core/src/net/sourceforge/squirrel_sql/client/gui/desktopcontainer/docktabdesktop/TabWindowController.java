@@ -9,7 +9,6 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowFocusListener;
 import java.util.ArrayList;
 import javax.swing.Icon;
-import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -84,10 +83,10 @@ public class TabWindowController implements DockTabDesktopPaneHolder
       _tabWindowFrame.addWindowFocusListener(l);
 
 
-      final ImageIcon icon = app.getResources().getIcon(SquirrelResources.IImageNames.APPLICATION_ICON);
+      final Icon icon = app.getResources().getIcon(SquirrelResources.IImageNames.APPLICATION_ICON);
       if (icon != null)
       {
-         _tabWindowFrame.setIconImage(icon.getImage());
+         _tabWindowFrame.setIconImage(GUIUtils.getIconImage(icon));
       }
 
 

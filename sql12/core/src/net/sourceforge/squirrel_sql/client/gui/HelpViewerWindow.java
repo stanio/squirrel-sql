@@ -37,7 +37,7 @@ import net.sourceforge.squirrel_sql.fw.util.log.LoggerController;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.swing.BorderFactory;
-import javax.swing.ImageIcon;
+import javax.swing.Icon;
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
@@ -197,10 +197,10 @@ public class HelpViewerWindow extends JFrame
 	{
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		final SquirrelResources rsrc = _app.getResources();
-		final ImageIcon icon = rsrc.getIcon(SquirrelResources.IImageNames.VIEW);
+		final Icon icon = rsrc.getIcon(SquirrelResources.IImageNames.VIEW);
 		if (icon != null)
 		{
-			setIconImage(icon.getImage());
+			setIconImage(GUIUtils.getIconImage(icon));
 		}
 
 		Container contentPane = getContentPane();
