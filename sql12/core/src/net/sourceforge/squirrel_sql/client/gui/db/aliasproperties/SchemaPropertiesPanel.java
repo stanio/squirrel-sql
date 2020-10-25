@@ -8,7 +8,7 @@ import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
 import javax.swing.ButtonGroup;
-import javax.swing.ImageIcon;
+import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -349,7 +349,7 @@ public class SchemaPropertiesPanel extends JPanel
       return ret;
    }
 
-   private ImageIcon getSmallPlusMinusIcon()
+   private Icon getSmallPlusMinusIcon()
    {
       if (isShowSchemaFilter())
       {

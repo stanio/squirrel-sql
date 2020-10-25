@@ -2,7 +2,7 @@ package net.sourceforge.squirrel_sql.plugins.graph;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
-import javax.swing.ImageIcon;
+import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -38,13 +38,13 @@ public class GraphMainPanelTab extends BaseMainPanelTab
       _lblTitle.setOpaque(false);
       if(isLink)
       {
-         ImageIcon linkIcon = new GraphPluginResources(plugin).getIcon(GraphPluginResources.IKeys.LINK);
+         Icon linkIcon = new GraphPluginResources(plugin).getIcon(GraphPluginResources.IKeys.LINK);
          _lblTitle.setIcon(linkIcon);
       }
 
 
       _tabComponent.add(_lblTitle, BorderLayout.CENTER);
-      ImageIcon icon = new GraphPluginResources(plugin).getIcon(GraphPluginResources.IKeys.TO_WINDOW_SMALL);
+      Icon icon = new GraphPluginResources(plugin).getIcon(GraphPluginResources.IKeys.TO_WINDOW_SMALL);
 
       _btnToWindow = new SmallTabButton(s_stringMgr.getString("GraphMainPanelTab.showInNewWIndow"), icon);
       _tabComponent.add(_btnToWindow, BorderLayout.EAST);

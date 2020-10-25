@@ -6,7 +6,7 @@ import net.sourceforge.squirrel_sql.fw.gui.GUIUtils;
 
 import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
-import javax.swing.ImageIcon;
+import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JMenuItem;
@@ -106,7 +106,7 @@ public class ButtonChooser
    private void createUI()
    {
       SquirrelResources rsrc = Main.getApplication().getResources();
-      ImageIcon iconUndefined = rsrc.getIcon(SquirrelResources.IImageNames.UNDEFINED);
+      Icon iconUndefined = rsrc.getIcon(SquirrelResources.IImageNames.UNDEFINED);
       //_btnUndefinedDefault = new JButton(iconUndefined);
       _btnUndefinedDefault = new JButton(iconUndefined);
       _btnUndefinedDefault.setToolTipText("There were no buttons added???");

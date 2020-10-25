@@ -6,7 +6,6 @@ import net.sourceforge.squirrel_sql.fw.resources.IconHandler;
 import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
 import javax.swing.Icon;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.plaf.basic.BasicButtonUI;
 import java.awt.Component;
@@ -29,22 +28,22 @@ public class SmallTabButton<T> extends JButton
       this(null, null, null, sizeOffset);
    }
 
-   public SmallTabButton(String toolTipText, ImageIcon icon)
+   public SmallTabButton(String toolTipText, Icon icon)
    {
       this(toolTipText, icon, null);
    }
 
-   public SmallTabButton(String toolTipText, ImageIcon icon, int sizeOffset)
+   public SmallTabButton(String toolTipText, Icon icon, int sizeOffset)
    {
       this(toolTipText, icon, null, sizeOffset);
    }
 
-   public SmallTabButton(String toolTipText, ImageIcon icon, T userObject)
+   public SmallTabButton(String toolTipText, Icon icon, T userObject)
    {
       this(toolTipText, icon, userObject, 5);
    }
 
-   public SmallTabButton(String toolTipText, ImageIcon icon, T userObject, int sizeOffset)
+   public SmallTabButton(String toolTipText, Icon icon, T userObject, int sizeOffset)
    {
       _icon = icon;
       _userObject = userObject;

@@ -6,28 +6,28 @@ import net.sourceforge.squirrel_sql.client.session.action.ToggleCurrentSQLResult
 import net.sourceforge.squirrel_sql.client.session.action.ToggleCurrentSQLResultTabStickyAction;
 
 import javax.swing.Action;
-import javax.swing.ImageIcon;
+import javax.swing.Icon;
 
 public class TabIconManager
 {
 
-   private final ImageIcon _stickyIcon;
-   private final ImageIcon _anchorIcon;
+   private final Icon _stickyIcon;
+   private final Icon _anchorIcon;
 
    public TabIconManager()
    {
       ActionCollection actionCollection = Main.getApplication().getActionCollection();
-      _stickyIcon = (ImageIcon) actionCollection.get(ToggleCurrentSQLResultTabStickyAction.class).getValue(Action.SMALL_ICON);
+      _stickyIcon = (Icon) actionCollection.get(ToggleCurrentSQLResultTabStickyAction.class).getValue(Action.SMALL_ICON);
 
-      _anchorIcon = (ImageIcon) actionCollection.get(ToggleCurrentSQLResultTabAnchoredAction.class).getValue(Action.SMALL_ICON);
+      _anchorIcon = (Icon) actionCollection.get(ToggleCurrentSQLResultTabAnchoredAction.class).getValue(Action.SMALL_ICON);
    }
 
-   ImageIcon getStickyIcon()
+   Icon getStickyIcon()
    {
       return _stickyIcon;
    }
 
-   ImageIcon getAnchorIcon()
+   Icon getAnchorIcon()
    {
       return _anchorIcon;
    }

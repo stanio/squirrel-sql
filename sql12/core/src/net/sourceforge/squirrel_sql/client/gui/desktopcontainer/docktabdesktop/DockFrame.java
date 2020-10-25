@@ -24,8 +24,8 @@ public class DockFrame extends JPanel
    private JLabel _lblTitle;
    private JButton _btnAutoHide;
    private JButton _btnMinimize;
-   private ImageIcon _iconAutohideOff;
-   private ImageIcon _iconAutohideOn;
+   private Icon _iconAutohideOff;
+   private Icon _iconAutohideOn;
 
    public DockFrame(IApplication app, Container comp, String title)
    {

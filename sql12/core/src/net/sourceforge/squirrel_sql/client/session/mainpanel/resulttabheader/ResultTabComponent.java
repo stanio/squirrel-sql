@@ -3,7 +3,7 @@ package net.sourceforge.squirrel_sql.client.session.mainpanel.resulttabheader;
 import net.sourceforge.squirrel_sql.client.Main;
 
 import javax.swing.BorderFactory;
-import javax.swing.ImageIcon;
+import javax.swing.Icon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import java.awt.Color;
@@ -22,7 +22,7 @@ public class ResultTabComponent extends JPanel
       setOpaque(false);
    }
 
-   public void setIcon(ImageIcon icon)
+   public void setIcon(Icon icon)
    {
       _titleLabel.setIcon(icon);
    }
@@ -47,8 +47,8 @@ public class ResultTabComponent extends JPanel
       }
    }
 
-   public ImageIcon getIcon()
+   public Icon getIcon()
    {
-      return (ImageIcon) _titleLabel.getIcon();
+      return _titleLabel.getIcon();
    }
 }

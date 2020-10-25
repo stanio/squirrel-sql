@@ -311,7 +311,7 @@ public class ResultFrame extends SessionDialogWidget
    {
       JPanel ret = new JPanel(new GridLayout(1,4));
 
-      ImageIcon iconReRun = Main.getApplication().getResources().getIcon(SquirrelResources.IImageNames.RERUN);
+      Icon iconReRun = Main.getApplication().getResources().getIcon(SquirrelResources.IImageNames.RERUN);
       _btnReRun = new TabButton(iconReRun);
       _btnReRun.setToolTipText(s_stringMgr.getString("ResultFrame.rerun"));
       //gbc = new GridBagConstraints(3,0,1,1,0,0,GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0,0,0,0), 0,0);
@@ -323,12 +323,12 @@ public class ResultFrame extends SessionDialogWidget
       //gbc = new GridBagConstraints(4,0,1,1,0,0,GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0,0,0,0), 0,0);
       ret.add(_markDuplicatesChooserController.getComponent());
 
-      ImageIcon iconFindColumn = Main.getApplication().getResources().getIcon(SquirrelResources.IImageNames.FIND_COLUMN);
+      Icon iconFindColumn = Main.getApplication().getResources().getIcon(SquirrelResources.IImageNames.FIND_COLUMN);
       _btnFindColumn = new TabButton(iconFindColumn);
       //gbc = new GridBagConstraints(5,0,1,1,0,0,GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0,0,0,0), 0,0);
       ret.add(_btnFindColumn);
 
-      ImageIcon iconFind = Main.getApplication().getResources().getIcon(SquirrelResources.IImageNames.FIND);
+      Icon iconFind = Main.getApplication().getResources().getIcon(SquirrelResources.IImageNames.FIND);
       _btnToggleFind = new TabButton(iconFind);
       //gbc = new GridBagConstraints(6,0,1,1,0,0,GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0,0,0,5), 0,0);
       ret.add(_btnToggleFind);

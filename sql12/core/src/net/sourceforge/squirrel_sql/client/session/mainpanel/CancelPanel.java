@@ -7,7 +7,7 @@ import net.sourceforge.squirrel_sql.fw.gui.GUIUtils;
 import net.sourceforge.squirrel_sql.fw.util.StringManager;
 import net.sourceforge.squirrel_sql.fw.util.StringManagerFactory;
 
-import javax.swing.ImageIcon;
+import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
@@ -46,7 +46,7 @@ public class CancelPanel extends JPanel
    {
       JPanel ret = new JPanel(new BorderLayout());
 
-      ImageIcon icon = session.getApplication().getResources().getIcon(SquirrelResources.IImageNames.CLOSE);
+      Icon icon = session.getApplication().getResources().getIcon(SquirrelResources.IImageNames.CLOSE);
       closeBtn = new JButton(icon);
       closeBtn.setBorderPainted(false);
       closeBtn.setMargin(new Insets(0, 0, 0, 0));

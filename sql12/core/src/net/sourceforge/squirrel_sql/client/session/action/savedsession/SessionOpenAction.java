@@ -67,7 +67,7 @@ public class SessionOpenAction extends SquirrelAction implements ISessionAction,
       }
    }
 
-   private ImageIcon getIcon(SavedSessionGrouped savedSessionGrouped)
+   private Icon getIcon(SavedSessionGrouped savedSessionGrouped)
    {
       if(savedSessionGrouped.isGroup())
       {

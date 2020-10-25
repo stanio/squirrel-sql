@@ -3,7 +3,7 @@ package net.sourceforge.squirrel_sql.client.session.mainpanel;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import javax.swing.ImageIcon;
+import javax.swing.Icon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
@@ -29,10 +29,10 @@ public class ResultLabelNameSwitcher
    private final int _tabIndex;
    private final JTabbedPane _tabResultTabs;
 
-   private final ImageIcon _labeledIcon;
-   private final ImageIcon _namedIcon;
+   private final Icon _labeledIcon;
+   private final Icon _namedIcon;
 
-   private ImageIcon _currentIcon;
+   private Icon _currentIcon;
    private SmallTabButton _btnLabelNameSwitch;
    private IDataSetViewer _dataSetViewer;
 

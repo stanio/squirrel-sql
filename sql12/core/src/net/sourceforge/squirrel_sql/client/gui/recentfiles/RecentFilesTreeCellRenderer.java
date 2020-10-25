@@ -48,7 +48,7 @@ public class RecentFilesTreeCellRenderer extends DefaultTreeCellRenderer
       return treeCellRendererComponent;
    }
 
-   static ImageIcon getOpenAtStartupIcon()
+   static Icon getOpenAtStartupIcon()
    {
       return Main.getApplication().getResources().getIcon(SquirrelResources.IImageNames.FILE_ARROW);
    }

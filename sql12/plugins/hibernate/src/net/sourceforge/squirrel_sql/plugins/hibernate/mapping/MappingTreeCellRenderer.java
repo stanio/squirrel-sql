@@ -9,7 +9,7 @@ import java.awt.*;
 
 public class MappingTreeCellRenderer extends DefaultTreeCellRenderer
 {
-   private ImageIcon _propertyIcon;
+   private Icon _propertyIcon;
 
    public MappingTreeCellRenderer(HibernatePluginResources resource)
    {

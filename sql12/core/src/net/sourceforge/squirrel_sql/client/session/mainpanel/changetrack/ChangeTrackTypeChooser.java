@@ -11,7 +11,7 @@ import net.sourceforge.squirrel_sql.fw.util.StringManager;
 import net.sourceforge.squirrel_sql.fw.util.StringManagerFactory;
 
 import javax.swing.AbstractButton;
-import javax.swing.ImageIcon;
+import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.ToolTipManager;
@@ -103,9 +103,9 @@ public class ChangeTrackTypeChooser
    private void initActionAndListeners()
    {
       SquirrelResources rsrc = Main.getApplication().getResources();
-      ImageIcon iconTrackManual = rsrc.getIcon(SquirrelResources.IImageNames.CHANGE_TRACK_MANUAL);
-      ImageIcon iconTrackFile = rsrc.getIcon(SquirrelResources.IImageNames.CHANGE_TRACK_FILE);
-      ImageIcon iconTrackGit = rsrc.getIcon(SquirrelResources.IImageNames.CHANGE_TRACK_GIT);
+      Icon iconTrackManual = rsrc.getIcon(SquirrelResources.IImageNames.CHANGE_TRACK_MANUAL);
+      Icon iconTrackFile = rsrc.getIcon(SquirrelResources.IImageNames.CHANGE_TRACK_FILE);
+      Icon iconTrackGit = rsrc.getIcon(SquirrelResources.IImageNames.CHANGE_TRACK_GIT);
 
       String textTrackManual = s_stringMgr.getString("ChangeTrackTypeChooser.manual") + ActionUtil.getAcceleratorString(rsrc, _action);
       String textTrackFile = s_stringMgr.getString("ChangeTrackTypeChooser.file") + ActionUtil.getAcceleratorString(rsrc, _action);

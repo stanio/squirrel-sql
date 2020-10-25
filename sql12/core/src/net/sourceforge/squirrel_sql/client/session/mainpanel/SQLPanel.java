@@ -52,7 +52,7 @@ import net.sourceforge.squirrel_sql.fw.util.log.LoggerController;
 
 import javax.swing.Action;
 import javax.swing.Box;
-import javax.swing.ImageIcon;
+import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
@@ -752,7 +752,7 @@ public class SQLPanel extends JPanel
 		{
 			super();
 			final SquirrelResources rsrc = app.getResources();
-			final ImageIcon icon = rsrc.getIcon(SquirrelResources.IImageNames.COPY_SELECTED);
+			final Icon icon = rsrc.getIcon(SquirrelResources.IImageNames.COPY_SELECTED);
 			setIcon(icon);
 			// i18n[SQLPanel.copylastbutton.hint=Copy current SQL history to entry area]
 			String hint = s_stringMgr.getString("SQLPanel.copylastbutton.hint");
@@ -775,7 +775,7 @@ public class SQLPanel extends JPanel
 		ShowHistoryButton(IApplication app)
 		{
 			final SquirrelResources rsrc = app.getResources();
-			final ImageIcon icon = rsrc.getIcon(SquirrelResources.IImageNames.SQL_HISTORY);
+			final Icon icon = rsrc.getIcon(SquirrelResources.IImageNames.SQL_HISTORY);
 			setIcon(icon);
 			// i18n[SQLPanel.openSqlHistory.hint=Open SQL History]
 			String hint = s_stringMgr.getString("SQLPanel.openSqlHistory.hint");

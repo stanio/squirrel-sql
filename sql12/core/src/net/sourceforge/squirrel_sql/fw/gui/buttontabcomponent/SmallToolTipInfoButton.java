@@ -24,7 +24,7 @@ public class SmallToolTipInfoButton
       _infoText = infoText;
       _displayTimeMillis = displayTimeMillis;
 
-      ImageIcon smallInfoIcon = getSmallInfoIcon();
+      Icon smallInfoIcon = getSmallInfoIcon();
       _btnShowToolTip = new SmallTabButton(null, smallInfoIcon, 0);
       //Dimension size = _btnShowToolTip.getPreferredSize();
       Dimension size = new Dimension(smallInfoIcon.getIconWidth(), smallInfoIcon.getIconWidth());
@@ -41,7 +41,7 @@ public class SmallToolTipInfoButton
       return _btnShowToolTip;
    }
 
-   private ImageIcon getSmallInfoIcon()
+   private Icon getSmallInfoIcon()
    {
       return Main.getApplication().getResources().getIcon(SquirrelResources.IImageNames.SMALL_INFO);
    }

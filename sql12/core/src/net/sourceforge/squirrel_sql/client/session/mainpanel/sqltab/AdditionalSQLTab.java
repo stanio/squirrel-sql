@@ -44,7 +44,7 @@ public class AdditionalSQLTab extends BaseSQLTab
       _tabNumber = additionalSQLTabCounter.nextNumber();
 
       _titleWithoutFile = s_stringMgr.getString("AdditionalSQLTab.title", _tabNumber);
-      ImageIcon icon = Main.getApplication().getResources().getIcon(SquirrelResources.IImageNames.ADD_TAB);
+      Icon icon = Main.getApplication().getResources().getIcon(SquirrelResources.IImageNames.ADD_TAB);
 
       _titleFileHandler = new TitleFilePathHandler(() -> setTitle(_titleWithoutFile));
 

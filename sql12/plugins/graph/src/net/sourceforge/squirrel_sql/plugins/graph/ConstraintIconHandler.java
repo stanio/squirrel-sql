@@ -4,7 +4,7 @@ import net.sourceforge.squirrel_sql.fw.util.StringManager;
 import net.sourceforge.squirrel_sql.fw.util.StringManagerFactory;
 
 import javax.swing.ButtonGroup;
-import javax.swing.ImageIcon;
+import javax.swing.Icon;
 import javax.swing.JPopupMenu;
 import javax.swing.JRadioButtonMenuItem;
 import java.awt.Graphics;
@@ -37,7 +37,7 @@ public class ConstraintIconHandler
          return;
       }
 
-      ImageIcon icon = getIcon(fkFrameOriginatingFrom, pkFramePointingTo, desktopController, constraintData);
+      Icon icon = getIcon(fkFrameOriginatingFrom, pkFramePointingTo, desktopController, constraintData);
 
       int imageX = getImageX(line, icon);
       int imageY = getImageY(line, icon);
@@ -45,7 +45,7 @@ public class ConstraintIconHandler
       icon.paintIcon(null, g, imageX, imageY);
    }
 
-   private ImageIcon getIcon(TableFrameController fkFrameOriginatingFrom,
+   private Icon getIcon(TableFrameController fkFrameOriginatingFrom,
                              TableFrameController pkFramePointingTo,
                              GraphDesktopController desktopController,
                              ConstraintData constraintData)
@@ -87,17 +87,17 @@ public class ConstraintIconHandler
       }
    }
 
-   private int getImageY(GraphLine line, ImageIcon icon)
+   private int getImageY(GraphLine line, Icon icon)
    {
       int yMid = line.getBegin().y + (int)((double)((line.getEnd().y - line.getBegin().y) / 2d) + 0.5);
-      int iHeight = icon.getImage().getHeight(null);
+      int iHeight = icon.getIconHeight();
       return yMid - ((int) (iHeight / 2d + 0.5d));
    }
 
-   private int getImageX(GraphLine line, ImageIcon icon)
+   private int getImageX(GraphLine line, Icon icon)
    {
       int xMid = line.getBegin().x + (int)((double)((line.getEnd().x- line.getBegin().x) / 2d) + 0.5);
-      int iWidth = icon.getImage().getWidth(null);
+      int iWidth = icon.getIconWidth();
       return xMid - ((int) (iWidth / 2d + 0.5d));
    }
 
@@ -113,7 +113,7 @@ public class ConstraintIconHandler
          return false;
       }
 
-      ImageIcon icon = getIcon(fkFrameOriginatingFrom, pkFramePointingTo, desktopController, constraintData);
+      Icon icon = getIcon(fkFrameOriginatingFrom, pkFramePointingTo, desktopController, constraintData);
 
 
       int imageX = getImageX(line, icon);
@@ -121,8 +121,8 @@ public class ConstraintIconHandler
       int hitX = e.getPoint().x;
       int hitY = e.getPoint().y;
 
-      if(   imageX < hitX && hitX < imageX + icon.getImage().getWidth(null)
-         && imageY < hitY && hitY < imageY + icon.getImage().getHeight(null))
+      if(   imageX < hitX && hitX < imageX + icon.getIconWidth()
+         && imageY < hitY && hitY < imageY + icon.getIconHeight())
       {
          if(0 != (e.getModifiersEx() & MouseEvent.BUTTON1_DOWN_MASK))
          {
@@ -144,7 +144,7 @@ public class ConstraintIconHandler
    {
       JPopupMenu popupMenu = new JPopupMenu();
 
-      ImageIcon icon;
+      Icon icon;
       String txt;
 
       final TableFrameController left;

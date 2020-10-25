@@ -6,7 +6,7 @@ import java.awt.event.ActionEvent;
 import java.sql.Connection;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import javax.swing.ImageIcon;
+import javax.swing.Icon;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 
@@ -68,7 +68,7 @@ public class StatisticsAndQueryPlanAction extends SquirrelAction implements ISQL
 
          CustomResultPanel resultPanel = new CustomResultPanel(new GridLayout(1,1));
 
-         ImageIcon icon = _resources.getIcon(CachePluginResources.IKeys.INTERSYSTEMS_CAC);
+         Icon icon = _resources.getIcon(CachePluginResources.IKeys.INTERSYSTEMS_CAC);
          _sqlPanelAPI.getSQLResultExecuter().addCustomResult(resultPanel, s_stringMgr.getString("StatisticsAndQueryPlanAction.tab.title"), icon);
 
          DataSetTextArea dataSetTextArea = new DataSetTextArea(s_stringMgr.getString("StatisticsAndQueryPlanAction.reading.stats.for.sql", cleanedSQL));

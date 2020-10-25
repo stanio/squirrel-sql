@@ -1,13 +1,13 @@
 package net.sourceforge.squirrel_sql.client.action;
 
-import javax.swing.ImageIcon;
+import javax.swing.Icon;
 import javax.swing.JMenuItem;
 import java.util.ArrayList;
 
 public class SquirrelActionChannel
 {
    private ArrayList<JMenuItem> _menuItems = new ArrayList<>();
-   private ImageIcon _icon;
+   private Icon _icon;
    private String _text;
 
    public void addBoundMenuItem(JMenuItem menuItem)
@@ -26,7 +26,7 @@ public class SquirrelActionChannel
       }
    }
 
-   public void updateIconAndText(ImageIcon icon, String text)
+   public void updateIconAndText(Icon icon, String text)
    {
       for (JMenuItem menuItem : _menuItems)
       {

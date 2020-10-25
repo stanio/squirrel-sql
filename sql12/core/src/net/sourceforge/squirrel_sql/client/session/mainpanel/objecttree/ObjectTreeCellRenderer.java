@@ -5,7 +5,7 @@ import net.sourceforge.squirrel_sql.client.session.ISession;
 import net.sourceforge.squirrel_sql.client.session.properties.SessionProperties;
 import org.apache.commons.lang3.StringUtils;
 
-import javax.swing.ImageIcon;
+import javax.swing.Icon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTree;
@@ -93,7 +93,7 @@ public class ObjectTreeCellRenderer extends DefaultTreeCellRenderer
 
          _filterHint = new JLabel(filterhint);
          final SquirrelResources rsrc = _session.getApplication().getResources();
-         final ImageIcon icon = rsrc.getIcon(SquirrelResources.IImageNames.FILTER);
+         final Icon icon = rsrc.getIcon(SquirrelResources.IImageNames.FILTER);
          _filterHint.setIcon(icon);
       }
       else
