@@ -1302,4 +1302,66 @@ public class GUIUtils
 
 		return ret;
 	}
+
+   public static final String AVOID_OVERLAPPING_LABELS_SKIP_ICONS =
+         "GUIUtils.avoidOverlappingLabels(skipIcons)";
+
+   /**
+    * Works around JGoodies Plastic L&F bugs of breaking
+    * the {@link JTabbedPane} contract:
+    * <blockquote>
+    * <p>If you specify a component for a tab, the {@code JTabbedPane}
+    * will not render any text or icon you have specified for the tab.</p>
+    * </blockquote>
+    * <p>With the default setup of {@code tabLayoutPolicy=WRAP_TAB_LAYOUT}
+    * this causes overlapping tab labels (both of tab icon/title and tab component
+    * are rendered).  We avoid this by ensuring tab icon gets unset and tab
+    * foreground is set to an invisible (fully-transparent) color.  The latter
+    * preserves accessibility to screen-readers and makes the next setup easier.</p>
+    * <p>
+    * With {@code tabLayoutPolicy=SCROLL_TAB_LAYOUT} JGoodies Plastic
+    * doesn't render tab components at all.  In this scenario don't set
+    * an invisible tab foreground and don't unset any icon provided so
+    * the tab label provides as much visual information as possible
+    * (as much visually accessible as possible, vs. an empty tab).</p>
+    *
+    * @param   tabbedPane  the tabbed pane to set up.
+    * @return  The given tabbed pane.
+    */
+   public static <T extends JTabbedPane> T avoidOverlappingLabels(T tabbedPane)
+   {
+      // tabLayoutPolicy = WRAP_TAB_LAYOUT
+      tabbedPane.addPropertyChangeListener("indexForTabComponent",
+            evt -> avoidOverlappingLabelAt(tabbedPane, (int) evt.getNewValue()));
+
+      // tabLayoutPolicy = SCROLL_TAB_LAYOUT
+      tabbedPane.addPropertyChangeListener("tabLayoutPolicy", evt ->
+      {
+         for (int i = 0; i < tabbedPane.getTabCount(); i++)
+            avoidOverlappingLabelAt(tabbedPane, i);
+      });
+      return tabbedPane;
+   }
+
+   static void avoidOverlappingLabelAt(JTabbedPane tabbedPane, int index)
+   {
+      Component tabComponent = tabbedPane.getTabComponentAt(index);
+      boolean wrapTabLayout = (tabbedPane.getTabLayoutPolicy() == JTabbedPane.WRAP_TAB_LAYOUT);
+
+      Color tabForeground = tabbedPane.getForegroundAt(index);
+      tabForeground = (tabComponent != null && wrapTabLayout)
+                      ? InvisibleColor.invisible(tabForeground, tabbedPane.getForeground())
+                      : InvisibleColor.original(tabForeground);
+      tabbedPane.setForegroundAt(index, tabForeground);
+
+      if (tabComponent == null || Boolean.TRUE
+            .equals(tabbedPane.getClientProperty(AVOID_OVERLAPPING_LABELS_SKIP_ICONS)))
+         return;
+
+      if (wrapTabLayout)
+      {
+         tabbedPane.setIconAt(index, null);
+      }
+   }
+
 }

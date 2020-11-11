@@ -62,6 +62,12 @@ public class AdditionalSQLTab extends BaseSQLTab
       return new SQLPanel(getSession(), SQLPanelPosition.ADDITIONAL_TAB_IN_SESSION_WINDOW, _titleFileHandler);
    }
 
+   @Override
+   public String getTitle()
+   {
+      return _tabComponent.getTitle();
+   }
+
    private void setTitle(String title)
    {
       _titleWithoutFile = title;

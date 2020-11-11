@@ -32,6 +32,7 @@ import net.sourceforge.squirrel_sql.client.session.mainpanel.sqltab.BaseSQLTab;
 import net.sourceforge.squirrel_sql.client.session.mainpanel.sqltab.SQLTab;
 import net.sourceforge.squirrel_sql.client.session.properties.SessionProperties;
 import net.sourceforge.squirrel_sql.fw.gui.GUIUtils;
+import net.sourceforge.squirrel_sql.fw.gui.buttontabcomponent.ButtonTabComponent;
 import net.sourceforge.squirrel_sql.fw.props.Props;
 import net.sourceforge.squirrel_sql.fw.util.StringManager;
 import net.sourceforge.squirrel_sql.fw.util.StringManagerFactory;
@@ -178,11 +179,10 @@ public class MainPanel extends JPanel
 			_tabs.add(tab);
 		}
 
-      _tabbedPane.insertTab(tab.getTitle(), null, tab.getComponent(), tab.getHint(), idx);
+      _tabbedPane.insertTab(tab.getTitle(), getComponentIcon(tab.getTabComponent()), tab.getComponent(), tab.getHint(), idx);
       if(null != tab.getTabComponent())
       {
          _tabbedPane.setTabComponentAt(idx, tab.getTabComponent());
-         _tabbedPane.setTitleAt(idx, "");
       }
 
 
@@ -201,6 +201,19 @@ public class MainPanel extends JPanel
 		performStateChanged();
 
 		return idx;
+	}
+
+	private static Icon getComponentIcon(Component comp)
+	{
+		if (comp instanceof JLabel)
+		{
+			return ((JLabel) comp).getIcon();
+		}
+		else if (comp instanceof ButtonTabComponent)
+		{
+			return ((ButtonTabComponent) comp).getIcon();
+		}
+		return null;
 	}
 
 	/**
@@ -240,7 +253,6 @@ public class MainPanel extends JPanel
       if(null != tab.getTabComponent())
       {
          _tabbedPane.setTabComponentAt(idx, tab.getTabComponent());
-         _tabbedPane.setTitleAt(idx, "");
       }
 
       if(selectInsertedTab)

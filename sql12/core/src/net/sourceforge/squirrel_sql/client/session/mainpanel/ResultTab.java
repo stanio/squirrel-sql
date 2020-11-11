@@ -557,7 +557,7 @@ public class ResultTab extends JPanel implements IHasIdentifier, IResultTab
        //  SCROLL _resultSetSp.setBorder(BorderFactory.createEmptyBorder());
       
       // i18n[ResultTab.resultsTabTitle=Results]
-      _tabResultTabs.addTab(null, _resultDataSetViewerFindHandler.getComponent()); //  SCROLL
+      _tabResultTabs.addTab(s_stringMgr.getString("ResultTab.resultsTabTitle"), _resultDataSetViewerFindHandler.getComponent()); //  SCROLL
       _resultLabelNameSwitcher = new ResultLabelNameSwitcher(s_stringMgr.getString("ResultTab.resultsTabTitle"), 0, _session, _tabResultTabs);
 
 
