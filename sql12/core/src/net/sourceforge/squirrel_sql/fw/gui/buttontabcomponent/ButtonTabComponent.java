@@ -20,6 +20,7 @@ import javax.swing.plaf.ColorUIResource;
 import net.sourceforge.squirrel_sql.client.Main;
 import net.sourceforge.squirrel_sql.client.gui.builders.UIFactory;
 import net.sourceforge.squirrel_sql.client.resources.SquirrelResources;
+import net.sourceforge.squirrel_sql.fw.gui.InvisibleColor;
 import net.sourceforge.squirrel_sql.fw.resources.IconHandler;
 import net.sourceforge.squirrel_sql.fw.util.StringManager;
 import net.sourceforge.squirrel_sql.fw.util.StringManagerFactory;
@@ -169,20 +170,12 @@ public class ButtonTabComponent extends JPanel
          if (tabIndex == _tabbedPane.getSelectedIndex())
          {
             _label.setFont(_selectedFont);
-            // check if the foreground color is not set by user through a call to setForegroundAt
-            if (_tabbedPane.getForegroundAt(tabIndex) instanceof ColorUIResource)
-            {
-               _label.setForeground(_foregroundColor);
-            }
-            else
-            {
-               _label.setForeground(_tabbedPane.getForegroundAt(tabIndex));
-            }
+            _label.setForeground(InvisibleColor.visible(_tabbedPane.getForegroundAt(tabIndex)));
          }
          else
          {
             _label.setFont(_defaultFont);
-            _label.setForeground(_tabbedPane.getForegroundAt(tabIndex));
+            _label.setForeground(InvisibleColor.visible(_tabbedPane.getForegroundAt(tabIndex)));
          }
       }
 
@@ -202,6 +195,11 @@ public class ButtonTabComponent extends JPanel
    public void setIcon(Icon icon)
    {
       _label.setIcon(icon);
+   }
+
+   public Icon getIcon()
+   {
+      return _label.getIcon();
    }
 
    public void setTitle(String title)

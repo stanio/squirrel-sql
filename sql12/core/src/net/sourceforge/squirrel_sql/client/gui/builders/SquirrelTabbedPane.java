@@ -21,6 +21,7 @@ package net.sourceforge.squirrel_sql.client.gui.builders;
 
 import net.sourceforge.squirrel_sql.client.IApplication;
 import net.sourceforge.squirrel_sql.client.preferences.SquirrelPreferences;
+import net.sourceforge.squirrel_sql.fw.gui.GUIUtils;
 
 import javax.swing.*;
 
@@ -29,6 +30,7 @@ class SquirrelTabbedPane extends JTabbedPane
 	SquirrelTabbedPane(SquirrelPreferences prefs, IApplication app)
 	{
       new SquirrelTabbedPaneDelegate(prefs, app, this);
+      GUIUtils.avoidOverlappingLabels(this);
 	}
 
 }

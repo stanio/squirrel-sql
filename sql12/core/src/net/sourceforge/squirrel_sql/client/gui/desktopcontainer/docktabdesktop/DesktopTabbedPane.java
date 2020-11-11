@@ -19,6 +19,7 @@ public class DesktopTabbedPane extends DnDTabbedPane
       setPaintScrollArea(false);
       setPaintGhost(true);
 
+      super.putClientProperty(GUIUtils.AVOID_OVERLAPPING_LABELS_SKIP_ICONS, true);
       GUIUtils.listenToMouseWheelClickOnTab(this, (tabIndex, tabComponent) -> ((ButtonTabComponent)tabComponent).doClickClose());
    }
 
@@ -40,6 +41,7 @@ public class DesktopTabbedPane extends DnDTabbedPane
    {
       ButtonTabComponent btc = (ButtonTabComponent) getTabComponentAt(index);
       btc.setTitle(title);
+      super.setTitleAt(index, title);
    }
 
    @Override
@@ -47,12 +49,20 @@ public class DesktopTabbedPane extends DnDTabbedPane
    {
       ButtonTabComponent btc = (ButtonTabComponent) getTabComponentAt(index);
       btc.setIcon(icon);
+      super.setIconAt(index, tabIcon(icon));
+   }
+
+   /**
+    * @see  GUIUtils#avoidOverlappingLabels(JTabbedPane)
+    */
+   private Icon tabIcon(Icon icon) {
+      return (getTabLayoutPolicy() == WRAP_TAB_LAYOUT) ? null : icon;
    }
 
    @Override
    public void addTab(String title, Icon icon, Component component, String tip)
    {
-      super.addTab("", null, component, tip);
+      super.addTab(title, tabIcon(icon), component, tip);
       int index = indexOfComponent(component);
       setTabComponentAt(index, new ButtonTabComponent(this, title, icon));
    }
@@ -60,7 +70,7 @@ public class DesktopTabbedPane extends DnDTabbedPane
    @Override
    public void insertTab(String title, Icon icon, Component component, String tip, int index)
    {
-      super.insertTab("", null, component, tip, index);
+      super.insertTab(title, tabIcon(icon), component, tip, index);
       setTabComponentAt(index, new ButtonTabComponent(this, title, icon));
    }
 

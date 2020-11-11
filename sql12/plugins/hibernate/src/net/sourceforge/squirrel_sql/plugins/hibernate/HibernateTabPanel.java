@@ -13,6 +13,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.JToggleButton;
 import javax.swing.SwingUtilities;
 
+import net.sourceforge.squirrel_sql.fw.gui.GUIUtils;
 import net.sourceforge.squirrel_sql.fw.gui.buttontabcomponent.ButtonTabComponent;
 import net.sourceforge.squirrel_sql.fw.props.Props;
 import net.sourceforge.squirrel_sql.fw.util.StringManager;
@@ -52,7 +53,7 @@ public class HibernateTabPanel extends JPanel
 
       splitHqlSql = new JSplitPane(JSplitPane.VERTICAL_SPLIT, hqlTextComp, hqlResultComp);
 
-      tabHibernateTabbedPane = new JTabbedPane();
+      tabHibernateTabbedPane = GUIUtils.avoidOverlappingLabels(new JTabbedPane());
 
       // i18n[HibernateTabPanel.mappedObjects=Mapped objects]
       tabHibernateTabbedPane.add(s_stringMgr.getString("HQLTabPanel.mappedObjects"), mappedObjectComp);
@@ -67,9 +68,6 @@ public class HibernateTabPanel extends JPanel
       tabComponentOfHqlTab.getClosebutton().setVisible(false);
       tabComponentOfHqlTab.getToWindowButton().setVisible(false);
       tabHibernateTabbedPane.setTabComponentAt(1, tabComponentOfHqlTab);
-
-      // See bug #1433
-      tabHibernateTabbedPane.setTitleAt(1, "");
 
 
 

@@ -1,5 +1,7 @@
 package net.sourceforge.squirrel_sql.client.gui.builders.dndtabbedpane;
 
+import net.sourceforge.squirrel_sql.fw.gui.GUIUtils;
+
 import javax.swing.*;
 import java.awt.datatransfer.Transferable;
 import java.awt.dnd.*;
@@ -32,6 +34,7 @@ public class DnDTabbedPane extends JTabbedPane
       }
 
       new DragSource().createDefaultDragGestureRecognizer(this, DnDConstants.ACTION_COPY_OR_MOVE, dgl);
+      GUIUtils.avoidOverlappingLabels(this);
    }
 
 
