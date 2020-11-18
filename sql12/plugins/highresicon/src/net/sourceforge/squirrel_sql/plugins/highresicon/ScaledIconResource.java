@@ -2,10 +2,14 @@ package net.sourceforge.squirrel_sql.plugins.highresicon;
 
 import io.github.stanio.xbrz.awt.AwtXbrz;
 
+import javax.accessibility.Accessible;
+import javax.accessibility.AccessibleContext;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.SwingUtilities;
 import javax.swing.UIDefaults;
+import javax.swing.UIDefaults.ActiveValue;
+import javax.swing.UIDefaults.LazyValue;
 import javax.swing.UIManager;
 import javax.swing.plaf.UIResource;
 import java.awt.Component;
@@ -16,10 +20,11 @@ import java.awt.RenderingHints;
 import java.awt.Window;
 import java.awt.geom.AffineTransform;
 import java.io.Serializable;
-import java.util.Collections;
+import java.util.Map;
+import java.util.function.Function;
 
 @SuppressWarnings("serial")
-class ScaledIconResource implements UIResource, Serializable, Icon
+class ScaledIconResource implements UIResource, Serializable, Icon, Accessible
 {
    private Icon icon;
    private int iconWidth;
@@ -110,36 +115,78 @@ class ScaledIconResource implements UIResource, Serializable, Icon
 
    private static void updateUI()
    {
-      boolean updated = false;
       UIDefaults defaults = UIManager.getLookAndFeelDefaults();
-      for (Object key : Collections.list(defaults.keys()))
+      UIDefaults updated = new UIDefaults();
+      for (Map.Entry<Object, Object> entry : defaults.entrySet())
       {
-         Object value = defaults.get(key);
-         if (!(value instanceof Icon))
-            continue;
-
-         if (value instanceof ScaledIconResource)
+         Object key = entry.getKey();
+         Object value = entry.getValue();
+         if (value instanceof ScaledIconResource
+               || value instanceof ScaledSynthIcon
+               || value instanceof ScaledActiveIcon)
          {
             System.out.println("Already scaled icon: " + key);
+            continue;
          }
-         else if (value.getClass().getPackage().getName().startsWith("com.formdev.flatlaf"))
+
+         Object computed = value;
+         if (value instanceof LazyValue)
+            computed = ((LazyValue) value).createValue(defaults);
+         else if (value instanceof ActiveValue)
+            computed = ((ActiveValue) value).createValue(defaults);
+
+         if (!(computed instanceof Icon))
+            continue;
+
+         if (computed.getClass().getPackage().getName().startsWith("com.formdev.flatlaf"))
          {
             // FlatLaf icons are already scaled.
          }
+         else if (ScaledSynthIcon.isSynthIcon(computed))
+         {
+            //System.out.println("ScaledSynthIcon: " + value);
+            updated.put(key, ScaledActiveIcon
+                  .compute(value, computed, v -> new ScaledSynthIcon((Icon) v)));
+         }
          else
          {
-            defaults.put(key, new ScaledIconResource((Icon) value));
-            updated = true;
+            //System.out.println("ScaledIconResource: " + value);
+            updated.put(key, ScaledActiveIcon
+                  .compute(value, computed, v -> new ScaledIconResource((Icon) v)));
          }
       }
-      if (updated)
+      if (!updated.isEmpty())
       {
+         defaults.putAll(updated);
          for (Window w : Window.getWindows())
          {
             SwingUtilities.invokeLater(() -> SwingUtilities.updateComponentTreeUI(w));
             //SwingUtilities.updateComponentTreeUI(w);
          }
       }
+   }
+
+   static interface ScaledActiveIcon extends ActiveValue
+   {
+      static Object compute(Object value, Object computed, Function<Object, Object> ctor)
+      {
+         if (value instanceof ActiveValue)
+         {
+            ScaledActiveIcon activeValue = table ->
+                  ctor.apply(((ActiveValue) value).createValue(table));
+            return activeValue;
+         }
+         return ctor.apply(computed);
+      }
+   }
+
+
+   @Override
+   public AccessibleContext getAccessibleContext()
+   {
+      return (icon instanceof Accessible)
+             ? ((Accessible) icon).getAccessibleContext()
+             : new ImageIcon().getAccessibleContext();
    }
 
 }
