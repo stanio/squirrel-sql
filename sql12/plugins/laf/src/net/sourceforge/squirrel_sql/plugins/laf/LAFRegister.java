@@ -260,7 +260,9 @@ public class LAFRegister
 			{
 				if (fi != null)
 				{
-					UIManager.put(keys[i], fi.createFont());
+					Font font = fi.createFont();
+					UIManager.put(keys[i], font);
+					UIManager.getLookAndFeelDefaults().put(keys[i], font);
 				}
 			}
 			else
@@ -276,7 +278,9 @@ public class LAFRegister
 			{
 				if (fi != null)
 				{
-					UIManager.put(keys[i], fi.createFont());
+					Font font = fi.createFont();
+					UIManager.put(keys[i], font);
+					UIManager.getLookAndFeelDefaults().put(keys[i], font);
 				}
 			}
 			else
@@ -292,7 +296,9 @@ public class LAFRegister
 			{
 				if (fi != null)
 				{
-					UIManager.put(keys[i], fi.createFont());
+					Font font = fi.createFont();
+					UIManager.put(keys[i], font);
+					UIManager.getLookAndFeelDefaults().put(keys[i], font);
 				}
 			}
 			else
