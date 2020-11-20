@@ -314,7 +314,7 @@ public abstract class Resources implements IResources
 	/**
 	 * @see IResources#getIcon(java.lang.String)
 	 */
-	public ImageIcon getIcon(String keyName)
+	public Icon getIcon(String keyName)
 	{
 		return getIcon(keyName, "image");
 	}
@@ -327,7 +327,7 @@ public abstract class Resources implements IResources
 	/**
 	 * @see IResources#getIcon(java.lang.Class, java.lang.String)
 	 */
-	public ImageIcon getIcon(Class<?> objClass, String propName)
+	public Icon getIcon(Class<?> objClass, String propName)
 	{
 		return getIcon(objClass.getName(), propName);
 	}
@@ -335,7 +335,7 @@ public abstract class Resources implements IResources
 	/**
 	 * @see IResources#getIcon(java.lang.String, java.lang.String)
 	 */
-	public ImageIcon getIcon(String keyName, String propName)
+	public Icon getIcon(String keyName, String propName)
 	{
 		String rsrcName = getResourceName(keyName, propName);
 
