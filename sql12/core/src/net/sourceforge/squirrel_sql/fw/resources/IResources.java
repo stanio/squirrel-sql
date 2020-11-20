@@ -3,7 +3,7 @@ package net.sourceforge.squirrel_sql.fw.resources;
 import java.util.MissingResourceException;
 
 import javax.swing.Action;
-import javax.swing.ImageIcon;
+import javax.swing.Icon;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
@@ -95,11 +95,11 @@ public interface IResources
 	 */
 	Action setupAction(Action action);
 
-	ImageIcon getIcon(String keyName);
+	Icon getIcon(String keyName);
 
-	ImageIcon getIcon(Class<?> objClass, String propName);
+	Icon getIcon(Class<?> objClass, String propName);
 
-	ImageIcon getIcon(String keyName, String propName);
+	Icon getIcon(String keyName, String propName);
 
 	String getString(String key);
 
