@@ -79,7 +79,7 @@ public class MemoryPanel extends JPanel
 		{
 			public void actionPerformed(ActionEvent e)
 			{
-				Utilities.garbageCollect();
+				Utilities.garbageCollect((e.getModifiers() & ActionEvent.CTRL_MASK) != 0);
 			}
 		});
 

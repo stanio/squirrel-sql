@@ -33,6 +33,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.sql.SQLException;
 import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.concurrent.Callable;
 import java.util.regex.Matcher;
@@ -432,6 +433,32 @@ public class Utilities
 	 * many requests using a queue to avoid a performance hit for too many simultaneous calls.
 	 */
 	public static void garbageCollect() {
+		garbageCollect(false);
+	}
+
+	public static void garbageCollect(boolean aggressive)
+	{
+		if (aggressive)
+		{
+			try
+			{
+				// java.util.ArrayList.MAX_ARRAY_SIZE
+				// jdk.internal.util.ArraysSupport.MAX_ARRAY_LENGTH
+				final int maxArraySize = Integer.MAX_VALUE - 8;
+				final ArrayList<Object> temp = new ArrayList<>();
+				long freeBytes;
+				while ((freeBytes = Runtime.getRuntime().freeMemory()) > 0)
+				{
+					int size = (int) Math.min(freeBytes, maxArraySize);
+					temp.add(new byte[size]);
+				}
+			}
+			catch (OutOfMemoryError e)
+			{
+				// -XX:SoftRefLRUPolicyMSPerMB=... Soft references are
+				// more likely to be cleared sooner at this point.
+			}
+		}
 		System.gc();
 	}
 
