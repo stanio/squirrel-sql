@@ -31,6 +31,7 @@ import javax.swing.JEditorPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
+import javax.swing.LookAndFeel;
 import javax.swing.event.EventListenerList;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
@@ -46,7 +47,6 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.RenderingHints;
-import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
@@ -473,17 +473,20 @@ public class HtmlViewerPanel extends JPanel
 
 	private void initKeyBindings()
 	{
-		InputMap scrollKeys = new InputMap();
-		scrollKeys.put(KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0), "scrollDown");
-		scrollKeys.put(KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, KeyEvent.SHIFT_DOWN_MASK), "scrollUp");
-		scrollKeys.put(KeyStroke.getKeyStroke(KeyEvent.VK_PAGE_DOWN, 0), "scrollDown");
-		scrollKeys.put(KeyStroke.getKeyStroke(KeyEvent.VK_PAGE_UP, 0), "scrollUp");
-		scrollKeys.put(KeyStroke.getKeyStroke(KeyEvent.VK_HOME, 0), "scrollHome");
-		scrollKeys.put(KeyStroke.getKeyStroke(KeyEvent.VK_END, 0), "scrollEnd");
-		scrollKeys.put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, 0), "unitScrollDown");
-		scrollKeys.put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0), "unitScrollUp");
-		scrollKeys.put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0), "unitScrollRight");
-		scrollKeys.put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0), "unitScrollLeft");
+		Object[] keys = // KeyStroke.getKeyStroke(String)
+		{
+			"SPACE",       "scrollDown",
+			"shift SPACE", "scrollUp",
+			"PAGE_DOWN",   "scrollDown",
+			"PAGE_UP",     "scrollUp",
+			"HOME",        "scrollHome",
+			"END",         "scrollEnd",
+			"DOWN",        "unitScrollDown",
+			"UP",          "unitScrollUp",
+			"RIGHT",       "unitScrollRight",
+			"LEFT",        "unitScrollLeft",
+		};
+		InputMap scrollKeys = LookAndFeel.makeInputMap(keys);
 
 		InputMap scrollInput = _contentsScrollPane.getInputMap(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
 		scrollKeys.setParent(scrollInput.getParent());
