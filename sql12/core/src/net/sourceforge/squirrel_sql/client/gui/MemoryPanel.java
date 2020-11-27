@@ -92,8 +92,6 @@ public class MemoryPanel extends JPanel
 			}
 		};
 
-		_btnSessionGCStatus.setBorder(null);
-
 		updateGcStatus();
 
 		_btnSessionGCStatus.setBorder(null);
@@ -183,10 +181,29 @@ public class MemoryPanel extends JPanel
 		SessionGCStatus gcStat = getSessionGCStatus();
 		_btnSessionGCStatus.setToolTipText(gcStat.tooltip);
 		_btnSessionGCStatus.setBackground(gcStat.color);
+		_btnSessionGCStatus.setForeground(contrastOf(gcStat.color));
 		_btnSessionGCStatus.setText(gcStat.numSessAwaitingGC);
 	}
 
+	private static Color contrastOf(Color color)
+	{
+		return luma(color) > 0.5 ? Color.black : Color.white;
+	}
 
+	private static float luma(Color c)
+	{
+		// ITU-R BT.2020 RGB to YCbCr
+		final double Kb = 0.0593f;
+		final double Kr = 0.2627f;
+		final double Kg = 1 - Kb - Kr;
+		return (float) (Kr * gamma(c.getRed()) + Kg * gamma(c.getGreen()) + Kb * gamma(c.getBlue())); // Y
+	}
+
+	private static double gamma(int val)
+	{
+		final double gamma = 1;
+		return Math.pow(val / 255.0, gamma);
+	}
 
 	private SessionGCStatus getSessionGCStatus()
 	{
