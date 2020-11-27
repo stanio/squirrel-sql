@@ -102,13 +102,13 @@ public class SquirrelRSyntaxTextArea extends RSyntaxTextArea
 
       setCurrentLineHighlightColor(new Color(prefs.getCurrentLineHighlightColorRGB()));
 
-      if(null != System.getProperty("os.name") && System.getProperty("os.name").toUpperCase().startsWith("WINDOWS"))
-      {
-         if(null == System.getProperty("sun.java2d.noddraw") || false == "true".equals(System.getProperty("sun.java2d.noddraw")))
-         {
-            session.getApplication().getMessageHandler().showWarningMessage(s_stringMgr.getString("syntax.useNoDDrawOnWIn32"));
-         }
-      }
+      //if(null != System.getProperty("os.name") && System.getProperty("os.name").toUpperCase().startsWith("WINDOWS"))
+      //{
+      //   if(null == System.getProperty("sun.java2d.noddraw") || false == "true".equals(System.getProperty("sun.java2d.noddraw")))
+      //   {
+      //      session.getApplication().getMessageHandler().showWarningMessage(s_stringMgr.getString("syntax.useNoDDrawOnWIn32"));
+      //   }
+      //}
 
       _textAreaPaintHandler = new TextAreaPaintHandler(this, b -> onPauseInsertPairedCharacters(b), session);
       setInsertPairedCharacters(_prefs.isInsertPairedQuotes());
