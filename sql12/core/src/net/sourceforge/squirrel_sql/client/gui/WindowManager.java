@@ -883,7 +883,9 @@ public class WindowManager
 
 	private void prepareRecentAliasesWindow()
 	{
-		_mainFrame.addWidget(_recentAliasesListCtrl.getWidget());
+		if (!Boolean.getBoolean("squirrel_sql.disableRecentAliases")) {
+			_mainFrame.addWidget(_recentAliasesListCtrl.getWidget());
+		}
 	}
 
 	private void prepareDriversWindow(MainFrameWindowState ws)
