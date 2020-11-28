@@ -67,6 +67,7 @@ public class SessionManager
    private volatile ISession _activeSession;
 
    private final Deque<ISession> _sessionsList = new ConcurrentLinkedDeque<>();
+   private final Deque<ISession> _liveSessionsList = new ConcurrentLinkedDeque<>();
 
    /** Map of sessions keyed by session ID. */
    private final Map<IIdentifier, ISession> _sessionsById = new ConcurrentHashMap<>();
@@ -109,7 +110,9 @@ public class SessionManager
       {
          _inCreateSession.add(sessionId);
 
-         final Session sess = new Session(app, driver, alias, conn, user, password, sessionId);
+         final Session ses = new Session(app, driver, alias, conn, user, password, sessionId);
+         _liveSessionsList.addLast(ses);
+         ISession sess = WeakSessionProxy.newProxy(ses);
          _sessionsList.add(sess);
          _sessionsById.put(sess.getIdentifier(), sess);
 
@@ -235,6 +238,13 @@ public class SessionManager
                s_log.error("SessionManager.closeSession()-> Session " +
                      sessionId +
                      " not found in _sessionsById when trying to remove it.");
+            }
+
+            final ISession delegate;
+            if (session instanceof WeakSessionProxy)
+            {
+               delegate = ((WeakSessionProxy) session).session();
+               _liveSessionsList.remove(delegate);
             }
 
             if (_sessionsList.isEmpty())
@@ -502,8 +512,9 @@ public class SessionManager
       }
    }
 
-   void fireConnectionClosedForReconnect(Session session)
+   void fireConnectionClosedForReconnect(Session liveSession)
    {
+      ISession session = _sessionsById.getOrDefault(liveSession.getIdentifier(), liveSession);
       Object[] listeners = listenerList.getListenerList();
       SessionEvent evt = null;
       for (int i = listeners.length - 2; i >= 0; i -= 2)
@@ -520,8 +531,9 @@ public class SessionManager
       }
    }
 
-   void fireReconnected(Session session)
+   void fireReconnected(Session liveSession)
    {
+      ISession session = _sessionsById.getOrDefault(liveSession.getIdentifier(), liveSession);
       Object[] listeners = listenerList.getListenerList();
       SessionEvent evt = null;
       for (int i = listeners.length - 2; i >= 0; i -= 2)
@@ -538,8 +550,9 @@ public class SessionManager
       }
    }
 
-   void fireReconnectFailed(Session session)
+   void fireReconnectFailed(Session liveSession)
    {
+      ISession session = _sessionsById.getOrDefault(liveSession.getIdentifier(), liveSession);
       Object[] listeners = listenerList.getListenerList();
       SessionEvent evt = null;
       for (int i = listeners.length - 2; i >= 0; i -= 2)
