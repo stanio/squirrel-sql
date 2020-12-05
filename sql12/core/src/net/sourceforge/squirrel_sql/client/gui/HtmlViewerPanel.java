@@ -42,6 +42,7 @@ import javax.swing.text.html.HTMLFrameHyperlinkEvent;
 import javax.swing.text.html.StyleSheet;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Desktop;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -55,6 +56,8 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
@@ -512,6 +515,8 @@ public class HtmlViewerPanel extends JPanel
 		}
 	}
 
+	private static Collection<String> webProtocols = Arrays.asList("http", "https");
+
 	private HyperlinkListener createHyperLinkListener()
 	{
 		return new HyperlinkListener()
@@ -520,6 +525,19 @@ public class HtmlViewerPanel extends JPanel
 			{
 				if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED)
 				{
+					// e.getInputEvent() != null && e.getInputEvent().isControlDown()
+					if (webProtocols.contains(e.getURL().getProtocol()) && Desktop.isDesktopSupported())
+					{
+						try
+						{
+							Desktop.getDesktop().browse(e.getURL().toURI());
+							return;
+						}
+						catch (IOException | URISyntaxException e1)
+						{
+							s_log.warn(e.getURL(), e1);
+						}
+					}
 					if (e instanceof HTMLFrameHyperlinkEvent)
 					{
 						((HTMLDocument)_contentsTxt.getDocument()).processHTMLFrameHyperlinkEvent((HTMLFrameHyperlinkEvent)e);
