@@ -37,7 +37,6 @@ import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 import javax.swing.text.Document;
 import javax.swing.text.html.HTMLDocument;
-import javax.swing.text.html.HTMLEditorKit;
 import javax.swing.text.html.HTMLFrameHyperlinkEvent;
 import javax.swing.text.html.StyleSheet;
 import java.awt.BorderLayout;
@@ -402,7 +401,7 @@ public class HtmlViewerPanel extends JPanel
 		_contentsTxt.putClientProperty(JEditorPane.HONOR_DISPLAY_PROPERTIES, true);
 		//_contentsTxt.putClientProperty(JEditorPane.W3C_LENGTH_UNITS, true);
 		_contentsTxt.setContentType("text/html");
-		_contentsTxt.setEditorKitForContentType("text/html", new HTMLEditorKit()
+		_contentsTxt.setEditorKitForContentType("text/html", new HTMLEditorKitCSSFontSizeFix()
 		{
 			@Override public Document createDefaultDocument()
 			{
