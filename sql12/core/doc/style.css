@@ -8,17 +8,16 @@
 BODY { font-style: normal;
        font-weight: normal }
 
-/* StyleSheet: Relative font sizes for block-level elements are
- * buggy.  For headings the scaling is applied twice.  For divs,
- * paragraphs, lists and others it is applied three times and
- * more (depending on nesting). */
-H1  { font-size: 126% } /* 160% */
-H2  { font-size: 118% } /* 140% */
-H3  { font-size: 110% } /* 120% */
+H1  { font-size: 160% }
+H2  { font-size: 140% }
+H3  { font-size: 120% }
 H4  { font-size: 100% }
 P   { font-size: 100% }
 
-DIV, SPAN, OL, UL, LI, DL, DT, DD, TABLE, TR, TH, TD { font-size: inherit }
+/* Work around font-size inheritance:
+ * https://bugs.java.com/bugdatabase/view_bug.do?bug_id=JDK-8257664 */
+DIV, SPAN, OL, UL, LI, DL, DT, DD, TABLE, TR, TH, TD,
+P, p-implied { font-size: 100% }
 
 H1, H2, H3, H4 { font-variant: small-caps }
 
