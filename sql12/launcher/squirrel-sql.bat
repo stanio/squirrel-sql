@@ -1,4 +1,5 @@
 @echo off
+setlocal
 
 @rem IzPack replaces ($ or %)JAVA_HOME with the JDK/JRE IzPack installer was started with.
 @rem I.e. is a built in variable of IzPack,
@@ -30,6 +31,9 @@ set basedir=%basedir:~0,-1%
 if NOT "%removed%"=="\" goto strip
 set SQUIRREL_SQL_HOME=%basedir%
 
+set SQUIRREL_SQL_OPTS=-Dflatlaf.useWindowDecorations=false %SQUIRREL_SQL_OPTS%
+rem -Dflatlaf.menuBarEmbedded=false
+
 "%LOCAL_JAVA%" -cp "%SQUIRREL_SQL_HOME%\lib\versioncheck.jar" JavaVersionChecker 11 12 13 14 15 16 17 18 19 20 21 22 23
 if ErrorLevel 1 goto ExitForWrongJavaVersion
 
@@ -48,4 +52,5 @@ start "SQuirreL SQL Client" /B "%LOCAL_JAVA%" -cp %CP% --add-exports=java.deskto
 	%SQUIRREL_SQL_OPTS% -splash:"%SQUIRREL_SQL_HOME%/icons/splash.jpg" net.sourceforge.squirrel_sql.client.Main %TMP_PARMS%
 
 :ExitForWrongJavaVersion
+endlocal
 
