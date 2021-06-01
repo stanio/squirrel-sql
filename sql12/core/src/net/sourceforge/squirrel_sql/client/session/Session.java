@@ -627,9 +627,9 @@ class Session implements ISession
       catch (SQLException ex)
       {
          final String msg = s_stringMgr.getString("Session.error.connclose");
-         s_log.error(msg, ex);
-         _msgHandler.showErrorMessage(msg);
-         _msgHandler.showErrorMessage(ex, this.getExceptionFormatter());
+         s_log.warn(msg, ex);
+         _msgHandler.showWarningMessage(msg);
+         _msgHandler.showWarningMessage(ex, this.getExceptionFormatter());
       }
       try
       {

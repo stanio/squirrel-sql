@@ -38,7 +38,7 @@ public class TimeOutUtil
       boolean usedMetaDataLoadingTimeout = false;
       try
       {
-         final Future future = StaticTimeOutThreadPool.submit((Callable) () -> runnableToCallableWrapperFunction(timeoutableInvoker));
+         final Future<?> future = StaticTimeOutThreadPool.submit(callable(timeoutableInvoker));
          final long metaDataLoadingTimeOutOfActiveSession = getMetaDataLoadingTimeOutOfActiveSession();
 
          if(0 == metaDataLoadingTimeOutOfActiveSession)
@@ -115,17 +115,12 @@ public class TimeOutUtil
       }
    }
 
-   private static Object runnableToCallableWrapperFunction(TimeOutableInvoker timeoutableInvoker)
+   private static Callable<Void> callable(TimeOutableInvoker timeoutableInvoker)
    {
-      try
-      {
+      return () -> {
          timeoutableInvoker.invoke();
          return null;
-      }
-      catch (Exception e)
-      {
-         throw Utilities.wrapRuntime(e);
-      }
+      };
    }
 
    public static long getDefaultOrConfiguredTimeoutMillis()
