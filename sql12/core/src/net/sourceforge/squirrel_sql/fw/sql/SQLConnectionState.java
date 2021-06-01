@@ -26,6 +26,7 @@ import net.sourceforge.squirrel_sql.fw.util.Utilities;
 import net.sourceforge.squirrel_sql.fw.util.log.ILogger;
 import net.sourceforge.squirrel_sql.fw.util.log.LoggerController;
 
+import java.util.concurrent.ExecutionException;
 
 /**
  * This class will save the state of an <TT>SQLConnection</TT> and
@@ -72,8 +73,9 @@ public class SQLConnectionState
 			 */
 			String msg = s_stringMgr.getString("SQLConnectionState.errorSavingIsolationState");
 
-			s_log.error(msg, ex);
-			msgHandler.showErrorMessage(msg, ex);
+			s_log.warn(msg, ex);
+			msgHandler.showErrorMessage(msg);
+			msgHandler.showWarningMessage(getExecutionCause(ex), null);
 		}
 
 		try
@@ -115,7 +117,7 @@ public class SQLConnectionState
 			String msg = s_stringMgr.getString("SQLConnectionState.errorSavingAutoCommit");
 
 			s_log.error(msg, ex);
-			msgHandler.showErrorMessage(msg, ex);
+			msgHandler.showErrorMessage(msg, getExecutionCause(ex));
 		}
 
 		try
@@ -130,9 +132,18 @@ public class SQLConnectionState
 		catch (Exception e)
 		{
 			s_log.error(e);
-			msgHandler.showErrorMessage(e);
+			msgHandler.showErrorMessage(getExecutionCause(e));
 		}
 
+	}
+
+	private Throwable getExecutionCause(Exception ex)
+	{
+		if (ex instanceof ExecutionException && ex.getCause() != null)
+		{
+			return ex.getCause();
+		}
+		return ex;
 	}
 
 	public void restoreState(ISQLConnection conn, IMessageHandler msgHandler)
