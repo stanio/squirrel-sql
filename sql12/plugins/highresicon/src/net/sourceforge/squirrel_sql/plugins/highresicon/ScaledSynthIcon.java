@@ -4,7 +4,7 @@ import java.awt.Graphics;
 import javax.swing.plaf.synth.SynthContext;
 import javax.swing.plaf.synth.SynthIcon;
 
-class ScaledSynthIcon implements SynthIcon
+class ScaledSynthIcon implements SynthIcon, ScaledIcon
 {
    private SynthIcon icon;
 
@@ -31,9 +31,9 @@ class ScaledSynthIcon implements SynthIcon
       return IconScale.ceil(icon.getIconHeight(context));
    }
 
-   public static boolean isSynthIcon(Object icon)
+   public static boolean isSynthIcon(Object value)
    {
-      return (icon instanceof SynthIcon);
+      return (value instanceof SynthIcon);
    }
 
 }

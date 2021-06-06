@@ -20,37 +20,43 @@ import java.awt.RenderingHints;
 import java.awt.Window;
 import java.awt.geom.AffineTransform;
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Function;
 
 @SuppressWarnings("serial")
-class ScaledIconResource implements UIResource, Serializable, Icon, Accessible
+class ScaledIconResource implements UIResource, Serializable, Icon, Accessible, ScaledIcon
 {
+   static Map<Object, Object> activeKeys = new HashMap<>();
+
    private Icon icon;
-   private int iconWidth;
-   private int iconHeight;
+   private Object key;
 
    private transient Image resolutionVariant;
 
-   private ScaledIconResource(Icon icon)
+   private ScaledIconResource(Icon icon, Object key)
    {
       this.icon = icon;
-      // Avoid infinite loop when instance replaced back into UIDefaults,
-      // for example with VistaMenuItemCheckIcon.
-      this.iconWidth = icon.getIconWidth();
-      this.iconHeight = icon.getIconHeight();
+      this.key = key;
    }
 
    @Override
    public void paintIcon(Component c, Graphics g, int x, int y)
    {
-      if (g instanceof Graphics2D)
+      try
       {
-         paintIcon((Graphics2D) g, x, y, c);
+         activeKeys.put(key, icon);
+         if (g instanceof Graphics2D)
+         {
+            paintIcon((Graphics2D) g, x, y, c);
+         }
+         else
+         {
+            icon.paintIcon(c, g, x, y);
+         }
       }
-      else
+      finally
       {
-         icon.paintIcon(c, g, x, y);
+         activeKeys.remove(key);
       }
    }
 
@@ -94,13 +100,29 @@ class ScaledIconResource implements UIResource, Serializable, Icon, Accessible
    @Override
    public int getIconWidth()
    {
-      return IconScale.ceil(iconWidth);
+      try
+      {
+         activeKeys.put(key, icon);
+         return IconScale.ceil(icon.getIconWidth());
+      }
+      finally
+      {
+         activeKeys.remove(key);
+      }
    }
 
    @Override
    public int getIconHeight()
    {
-      return IconScale.ceil(iconHeight);
+      try
+      {
+         activeKeys.put(key, icon);
+         return IconScale.ceil(icon.getIconHeight());
+      }
+      finally
+      {
+         activeKeys.remove(key);
+      }
    }
 
    static void install()
@@ -121,38 +143,29 @@ class ScaledIconResource implements UIResource, Serializable, Icon, Accessible
       {
          Object key = entry.getKey();
          Object value = entry.getValue();
-         if (value instanceof ScaledIconResource
-               || value instanceof ScaledSynthIcon
-               || value instanceof ScaledActiveIcon)
+         if (value instanceof ScaledIcon)
          {
-            System.out.println("Already scaled icon: " + key);
+            System.err.println("Already scaled icon: " + key);
             continue;
          }
 
-         Object computed = value;
+         Object computed;
          if (value instanceof LazyValue)
-            computed = ((LazyValue) value).createValue(defaults);
-         else if (value instanceof ActiveValue)
-            computed = ((ActiveValue) value).createValue(defaults);
-
-         if (!(computed instanceof Icon))
-            continue;
-
-         if (computed.getClass().getPackage().getName().startsWith("com.formdev.flatlaf"))
          {
-            // FlatLaf icons are already scaled.
+            computed = ScaledLazyProxy.of((LazyValue) value, key);
          }
-         else if (ScaledSynthIcon.isSynthIcon(computed))
+         else if (value instanceof ActiveValue)
          {
-            //System.out.println("ScaledSynthIcon: " + value);
-            updated.put(key, ScaledActiveIcon
-                  .compute(value, computed, v -> new ScaledSynthIcon((Icon) v)));
+            computed = ScaledActiveProxy.of((ActiveValue) value, key);
          }
          else
          {
-            //System.out.println("ScaledIconResource: " + value);
-            updated.put(key, ScaledActiveIcon
-                  .compute(value, computed, v -> new ScaledIconResource((Icon) v)));
+            computed = scaledIcon(value, key);
+         }
+
+         if (computed != value)
+         {
+            updated.put(key, computed);
          }
       }
       if (!updated.isEmpty())
@@ -166,17 +179,60 @@ class ScaledIconResource implements UIResource, Serializable, Icon, Accessible
       }
    }
 
-   static interface ScaledActiveIcon extends ActiveValue
+
+   static Object scaledIcon(Object value, Object key)
    {
-      static Object compute(Object value, Object computed, Function<Object, Object> ctor)
+      if (!(value instanceof Icon))
+         return value;
+
+      if (value.getClass().getPackage().getName().startsWith("com.formdev.flatlaf"))
       {
-         if (value instanceof ActiveValue)
+         return value;
+      }
+      else if (ScaledSynthIcon.isSynthIcon(value))
+      {
+         return new ScaledSynthIcon((Icon) value);
+      }
+      else
+      {
+         return new ScaledIconResource((Icon) value, key);
+      }
+   }
+
+
+   static interface ScaledLazyProxy extends LazyValue, ScaledIcon
+   {
+      static ScaledLazyProxy of(LazyValue delegate, Object key)
+      {
+         return table -> scaledIcon(delegate.createValue(table), key);
+      }
+   }
+
+
+   static interface ScaledActiveProxy extends ActiveValue, ScaledIcon
+   {
+      static ScaledActiveProxy of(ActiveValue delegate, Object key)
+      {
+         return table ->
          {
-            ScaledActiveIcon activeValue = table ->
-                  ctor.apply(((ActiveValue) value).createValue(table));
-            return activeValue;
-         }
-         return ctor.apply(computed);
+            // Avoid infinite recursion / stack overflow with Windows LAF.
+            if (activeKeys.containsKey(key))
+            {
+               return activeKeys.get(key);
+            }
+
+            try
+            {
+               activeKeys.put(key, null);
+               Object value = delegate.createValue(table);
+               activeKeys.put(key, value);
+               return scaledIcon(value, key);
+            }
+            finally
+            {
+               activeKeys.remove(key);
+            }
+         };
       }
    }
 
@@ -189,4 +245,8 @@ class ScaledIconResource implements UIResource, Serializable, Icon, Accessible
              : new ImageIcon().getAccessibleContext();
    }
 
+
 }
+
+
+interface ScaledIcon { /* Tagging interface */ }
