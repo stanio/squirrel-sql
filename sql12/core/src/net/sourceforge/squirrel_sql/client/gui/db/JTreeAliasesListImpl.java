@@ -147,7 +147,8 @@ public class JTreeAliasesListImpl implements IAliasesList, IAliasTreeInterface
       if (selectionListener != null)
       {
          _tree.addPropertyChangeListener(JTree.LEAD_SELECTION_PATH_PROPERTY,
-                                         evt -> selectionListener.selectionChanged(getLeadSelectionValue()));
+               evt -> selectionListener.selectionChanged(getLeadSelectionValue()));
+         _tree.addFocusListener(selectionListener.getFocusListener(this));
       }
    }
 

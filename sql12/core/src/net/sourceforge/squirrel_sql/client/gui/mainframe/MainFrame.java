@@ -460,4 +460,9 @@ public class MainFrame extends JFrame
 	{
 		return _mainFrameTitleHandler;
 	}
+
+   public String getStatusText()
+   {
+      return _statusBar.getText();
+   }
 }
