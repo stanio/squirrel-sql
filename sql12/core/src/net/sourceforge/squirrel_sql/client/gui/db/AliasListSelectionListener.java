@@ -4,6 +4,8 @@ import net.sourceforge.squirrel_sql.client.mainframe.action.ConnectToAliasComman
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import java.awt.Component;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -12,6 +14,22 @@ import java.util.List;
 public interface AliasListSelectionListener
 {
    void selectionChanged(SQLAlias alias);
+
+   default FocusListener getFocusListener(IAliasesList list)
+   {
+      return new FocusListener()
+      {
+         @Override public void focusLost(FocusEvent evt)
+         {
+            selectionChanged(null);
+         }
+
+         @Override public void focusGained(FocusEvent evt)
+         {
+            selectionChanged(list.getLeadSelectionValue());
+         }
+      };
+   }
 
    default KeyListener getActionKeyListener(IAliasesList list)
    {

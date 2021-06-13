@@ -174,6 +174,11 @@ public class SessionStatusBar extends JPanel
 		StatusBarUtil.updateSubcomponentsFont(this, _font);
 	}
 
+	public String getText()
+	{
+		return _textLbl.getText();
+	}
+
 	public void setText(String text, Object hrefReferenceObject)
 	{
 		_hrefReferenceObject = hrefReferenceObject;

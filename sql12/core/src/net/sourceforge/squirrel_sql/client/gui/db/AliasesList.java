@@ -13,6 +13,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /*
  * Copyright (C) 2001-2004 Colin Bell
@@ -59,9 +60,18 @@ public class AliasesList implements IToogleableAliasesList
       _jTreeImpl = new JTreeAliasesListImpl(app, listModel, this::onAliasSelected);
    }
 
+   private String _lastAliasStatus;
+   private String _statusBackup;
+
    private void onAliasSelected(SQLAlias item)
    {
-      String label = null;
+      String currentStatus = Main.getApplication().getMainFrame().getStatusText();
+      if (!Objects.equals(currentStatus, _lastAliasStatus))
+      {
+         _statusBackup = currentStatus;
+      }
+
+      String label = _statusBackup;
       if (item != null)
       {
 //         // Avoid wrapping - just crop
@@ -71,6 +81,7 @@ public class AliasesList implements IToogleableAliasesList
          label = item.getUrl();
       }
       Main.getApplication().getMainFrame().setStatusText(label);
+      _lastAliasStatus = (item == null) ? null : Main.getApplication().getMainFrame().getStatusText();
    }
 
    public void nowVisible(boolean b)

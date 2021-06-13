@@ -56,7 +56,7 @@ public class MainFrameStatusBar extends JPanel
 		// up all available space.
 		_gbc.anchor = GridBagConstraints.WEST;
 		_gbc.weightx = 1.0;
-		_gbc.fill = GridBagConstraints.HORIZONTAL;
+		_gbc.fill = GridBagConstraints.BOTH;
 		_gbc.gridy = 0;
 		_gbc.gridx = 0;
 
@@ -91,6 +91,11 @@ public class MainFrameStatusBar extends JPanel
 	public void setText(String text)
 	{
 		_textLbl.setText(text);
+	}
+
+	public String getText()
+	{
+	   return _textLbl.getText();
 	}
 
 
