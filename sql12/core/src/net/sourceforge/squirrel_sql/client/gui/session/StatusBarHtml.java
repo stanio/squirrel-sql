@@ -8,8 +8,8 @@ public class StatusBarHtml
 {
    static String createStatusBarHtml(TreePath selPath)
    {
-      StringBuffer buf = new StringBuffer();
-      buf.append("<html>");
+      StringBuilder buf = new StringBuilder();
+      buf.append("<html><span style='white-space: pre'>");
       Object[] fullPath = selPath.getPath();
       for (int i = 0; i < fullPath.length; ++i)
       {
@@ -18,11 +18,11 @@ public class StatusBarHtml
             ObjectTreeNode node = (ObjectTreeNode)fullPath[i];
 
             // See linkDescription in getTreePathForLink(...) below.
-            String linkDescription = "" + i;
+            int linkDescription = i;
             buf.append('/').append("<a href=\"" + linkDescription + "\">" + node.toString() + "</a>");
          }
       }
-      buf.append("</html>");
+      buf.append("</span></html>");
       final String text = buf.toString();
       return text;
    }
