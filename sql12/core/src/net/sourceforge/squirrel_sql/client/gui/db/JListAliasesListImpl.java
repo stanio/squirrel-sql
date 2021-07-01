@@ -81,6 +81,7 @@ public class JListAliasesListImpl extends BaseList<SQLAlias> implements IAliases
 		if (selectionListener != null)
 		{
 			getList().addListSelectionListener(evt -> selectionListener.selectionChanged(getLeadSelectionValue()));
+			getList().addKeyListener(selectionListener.getActionKeyListener(this));
 		}
 
 		getList().addKeyListener(new KeyAdapter()

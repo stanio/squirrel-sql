@@ -55,8 +55,8 @@ public class AliasesList implements IToogleableAliasesList
    public AliasesList(IApplication app)  // DO NOT USE EXCEPT IN WindowManager
 	{
       AliasesListModel listModel = new AliasesListModel(app);
-      _jListImpl= new JListAliasesListImpl(app, listModel, item -> onAliasSelected(item));
-      _jTreeImpl = new JTreeAliasesListImpl(app, listModel, item -> onAliasSelected(item));
+      _jListImpl= new JListAliasesListImpl(app, listModel, this::onAliasSelected);
+      _jTreeImpl = new JTreeAliasesListImpl(app, listModel, this::onAliasSelected);
    }
 
    private void onAliasSelected(SQLAlias item)
