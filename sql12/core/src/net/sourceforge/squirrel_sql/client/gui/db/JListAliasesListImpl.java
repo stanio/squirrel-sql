@@ -12,6 +12,8 @@ import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 import java.awt.*;
 import java.awt.event.MouseEvent;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /*
  * Copyright (C) 2001-2004 Colin Bell
@@ -93,6 +95,15 @@ public class JListAliasesListImpl extends BaseList implements IAliasesList
 			selectedValue = list.getModel().getElementAt(selectedIndex);
 		}
 		return (selectedValue instanceof SQLAlias) ? (SQLAlias) selectedValue : null;
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public List<SQLAlias> getSelectedAliases()
+	{
+		return (List<SQLAlias>) getList().getSelectedValuesList().stream()
+		                                 .filter(SQLAlias.class::isInstance)
+		                                 .collect(Collectors.toList());
 	}
 
 	private void onIntervalRemoved(ListDataEvent evt)

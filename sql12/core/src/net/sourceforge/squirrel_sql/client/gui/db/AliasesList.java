@@ -171,6 +171,12 @@ public class AliasesList implements IToogleableAliasesList
       return getCurrentImpl().getLeadSelectionValue();
    }
 
+   @Override
+   public List<SQLAlias> getSelectedAliases()
+   {
+      return getCurrentImpl().getSelectedAliases();
+   }
+
    public void sortAliases()
    {
       getCurrentImpl().sortAliases();
