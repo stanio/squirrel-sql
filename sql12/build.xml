@@ -1,5 +1,6 @@
-<project name="SQuirreLSQL" default="buildAll" basedir=".">
+<project name="SQuirreLSQL" default="buildAll" basedir="." xmlns:if="ant:if" xmlns:unless="ant:unless">
 
+    <taskdef resource="net/sf/antcontrib/antcontrib.properties"/>
 
     <property name="targetVM" value="11"/>
 
@@ -7,11 +8,22 @@
 
         <tstamp/> <!-- Needed to initialize DSTAMP and TSTAMP variables-->
 
+        <exec executable="git" outputproperty="gitVer">
+            <arg value="describe" />
+            <arg value="--tags" />
+        </exec>
+
         <!-- DEFINE VERSION HERE ONLY-->
         <!--<property name="squirrelsql.version" value="4.8.0"/>-->
-        <property name="squirrelsql.version" value="snapshot-${DSTAMP}_${TSTAMP}"/>
+        <!--<property name="squirrelsql.version" value="snapshot-${DSTAMP}_${TSTAMP}"/>-->
+        <propertyregex property="squirrelsql.version" if:true="${release}"
+                input="${gitVer}" regexp="(.+)-([0-9]+)-g([0-9a-f]+)"
+                replace="\1+\2-${DSTAMP}_${TSTAMP}" casesensitive="false" />
+        <propertyregex property="squirrelsql.version" unless:true="${release}"
+                input="${gitVer}" regexp="(.+)-([0-9]+)-g([0-9a-f]+)"
+                replace="\1+\2-\3" casesensitive="false" />
 
-        <delete dir="output"/>
+        <delete dir="output" if:set="clean"/>
         <mkdir dir="output/work/bin"/>
         <mkdir dir="output/dist"/>
         <mkdir dir="output/dist/lib"/>
@@ -19,7 +31,7 @@
         <mkdir dir="output/izPackInstallJars"/>
         <mkdir dir="output/plainZip/work"/>
 
-        <delete dir="versionChecker/output"/>
+        <delete dir="versionChecker/output" if:set="clean"/>
         <mkdir dir="versionChecker/output/work/bin"/>
     </target>
 
@@ -46,7 +58,7 @@
         <antcall target="compileMacPlugin"/>
     </target>
 
-    <target name="createPlainZip" description="createPlainZip">
+    <target name="createPlainZip" description="createPlainZip" if="${release}">
         <delete dir="output/plainZip/work"/>
 
         <property name="plainZipName" value="squirrelsql-${squirrelsql.version}-${plainZipNamePostfix}"/>
@@ -79,7 +91,7 @@
              classname="com.izforge.izpack.ant.IzPackTask"
              classpathref="lib.path"/>
 
-    <target name="createIZPackInstallJars" description="createIZPackInstallJars">
+    <target name="createIZPackInstallJars" description="createIZPackInstallJars" if="${release}">
 
         <izpack input="installer/other/izpack-other.xml"
                 output="output/izPackInstallJars/squirrel-sql-${squirrelsql.version}-standard.jar"
@@ -237,7 +249,7 @@
 
 
     <target name="doCompilePlugin" description="doCompilePlugin">
-        <delete dir="output/work/${pluginName}/bin"/>
+        <delete dir="output/work/${pluginName}/bin" if:set="clean"/>
         <mkdir dir="output/work/${pluginName}/bin"/>
 
         <echo message="###Compiling Plugin ${pluginName}"/>
@@ -282,7 +294,14 @@
 
     <target name="runApp" description="Run SquirrelSQL">
         <java jar="output/dist/squirrel-sql.jar" fork="true">
+            <sysproperty key="sun.awt.nopixfmt" value="true"/>
+            <sysproperty key="sun.java2d.noddraw" value="true"/>
+            <sysproperty key="flatlaf.useWindowDecorations" value="false"/>
+            <jvmarg value="-Xrunjdwp:transport=dt_socket,address=8018,server=y,suspend=n"/>
             <jvmarg value="-splash:output/dist/icons/splash.jpg" />
+            <arg value="-userdir"/>
+            <arg value="${userdir}" if:set="userdir"/>
+            <arg value="./squirrel-demo" unless:set="userdir"/>
         </java>
     </target>
 
