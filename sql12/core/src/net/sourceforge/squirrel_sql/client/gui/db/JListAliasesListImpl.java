@@ -15,6 +15,7 @@ import java.awt.BorderLayout;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import java.util.List;
 
 /*
  * Copyright (C) 2001-2004 Colin Bell
@@ -119,6 +120,12 @@ public class JListAliasesListImpl extends BaseList<SQLAlias> implements IAliases
 			selectedValue = list.getModel().getElementAt(selectedIndex);
 		}
 		return (selectedValue instanceof SQLAlias) ? (SQLAlias) selectedValue : null;
+	}
+
+	@Override
+	public List<SQLAlias> getSelectedAliases()
+	{
+		return getList().getSelectedValuesList();
 	}
 
 	private void onIntervalRemoved(ListDataEvent evt)

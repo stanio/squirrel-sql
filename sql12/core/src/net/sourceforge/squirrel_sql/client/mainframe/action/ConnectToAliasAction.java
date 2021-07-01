@@ -23,6 +23,7 @@ import net.sourceforge.squirrel_sql.client.gui.db.IAliasesList;
 import net.sourceforge.squirrel_sql.client.gui.db.SQLAlias;
 
 import java.awt.event.ActionEvent;
+import java.util.List;
 
 public class ConnectToAliasAction extends AliasAction
 {
@@ -52,8 +53,8 @@ public class ConnectToAliasAction extends AliasAction
    public void actionPerformed(ActionEvent evt)
    {
       moveToFrontAndSelectAliasFrame();      
-      final SQLAlias alias = _aliases.getSelectedAlias(null);
-      if (alias != null)
+      final List<SQLAlias> items = _aliases.getSelectedAliases();
+      for (SQLAlias alias : items)
       {
          new ConnectToAliasCommand(alias).executeConnect();
       }

@@ -51,6 +51,9 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class JTreeAliasesListImpl implements IAliasesList, IAliasTreeInterface
 {
@@ -171,7 +174,11 @@ public class JTreeAliasesListImpl implements IAliasesList, IAliasTreeInterface
    @Override
    public SQLAlias getLeadSelectionValue()
    {
-      TreePath selectedPath = _tree.getLeadSelectionPath();
+      return aliasValueOf(_tree.getLeadSelectionPath());
+   }
+
+   private static SQLAlias aliasValueOf(TreePath selectedPath)
+   {
       Object selectedNode = null;
       if (selectedPath != null)
       {
@@ -184,6 +191,15 @@ public class JTreeAliasesListImpl implements IAliasesList, IAliasTreeInterface
          selectedValue = ((DefaultMutableTreeNode) selectedNode).getUserObject();
       }
       return (selectedValue instanceof SQLAlias) ? (SQLAlias) selectedValue : null;
+   }
+
+   @Override
+   public List<SQLAlias> getSelectedAliases()
+   {
+      return Stream.of(_tree.getSelectionPaths())
+                   .map(JTreeAliasesListImpl::aliasValueOf)
+                   .filter(Objects::nonNull)
+                   .collect(Collectors.toList());
    }
 
    private void initCancelCutAction()
