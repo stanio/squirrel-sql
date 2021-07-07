@@ -45,9 +45,19 @@ public interface AliasListSelectionListener
                   Component parent = (evt.getSource() instanceof Component)
                                      ? SwingUtilities.getWindowAncestor((Component) evt.getSource())
                                      : null;
+                  StringBuilder msg = new StringBuilder();
+                  msg.append("<html>Open " + aliases.size() + " selected aliases?")
+                        .append("<ul style='margin-left: 14; padding-left: 0'>");
+                  for (SQLAlias item : aliases)
+                  {
+                     msg.append("<li>")
+                           .append(item.getName().replace("&", "&amp;").replace("<", "&lt;"))
+                           .append("</li>");
+                  }
+                  msg.append("</ul></html>");
                   int option = JOptionPane.showConfirmDialog(parent,
-                        "Open " + aliases.size() + " selected aliases?",
-                        "Open multiple aliases", JOptionPane.OK_CANCEL_OPTION);
+                        msg.toString(), "Open multiple aliases",
+                        JOptionPane.OK_CANCEL_OPTION);
                   if (option != JOptionPane.OK_OPTION)
                   {
                      return;
