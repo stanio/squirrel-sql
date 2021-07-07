@@ -22,6 +22,9 @@ import net.sourceforge.squirrel_sql.client.IApplication;
 import net.sourceforge.squirrel_sql.client.gui.db.IAliasesList;
 import net.sourceforge.squirrel_sql.client.gui.db.SQLAlias;
 
+import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.util.List;
 
@@ -54,6 +57,29 @@ public class ConnectToAliasAction extends AliasAction
    {
       moveToFrontAndSelectAliasFrame();      
       final List<SQLAlias> items = _aliases.getSelectedAliases();
+      if (items.size() > 1)
+      {
+         Component parent = (evt.getSource() instanceof Component)
+                            ? SwingUtilities.getWindowAncestor((Component) evt.getSource())
+                            : null;
+         StringBuilder msg = new StringBuilder("<html>Open ")
+               .append(items.size()).append(" selected aliases?")
+               .append("<ul style='margin-left: 14; padding-left: 0'>");
+         for (SQLAlias alias : items)
+         {
+            msg.append("<li>")
+                  .append(alias.getName().replace("&", "&amp;").replace("<", "&lt;"))
+                  .append("</li>");
+         }
+         msg.append("</ul></html>");
+         int option = JOptionPane.showConfirmDialog(parent,
+               msg, "Open multiple aliases", JOptionPane.OK_CANCEL_OPTION);
+         if (option != JOptionPane.OK_OPTION)
+         {
+            return;
+         }
+      }
+
       for (SQLAlias alias : items)
       {
          new ConnectToAliasCommand(alias).executeConnect();
