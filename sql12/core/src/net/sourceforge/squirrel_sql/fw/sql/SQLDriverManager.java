@@ -70,6 +70,7 @@ public class SQLDriverManager
 			sqlDriver.addPropertyChangeListener(_myDriverListener);
 			_driverInfo.put(sqlDriver.getIdentifier(), sqlDriver);
 
+			// REVISIT: Could we load and update the JDBCDriverClassLoaded flag in background?
 			Driver driver = getDriver(sqlDriver.getIdentifier());
 
 			new SwingWorker<Void, Void>()
