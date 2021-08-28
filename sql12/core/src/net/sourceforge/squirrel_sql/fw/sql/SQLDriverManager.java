@@ -21,13 +21,17 @@ package net.sourceforge.squirrel_sql.fw.sql;
 import net.sourceforge.squirrel_sql.client.gui.db.SQLAlias;
 import net.sourceforge.squirrel_sql.client.session.action.reconnect.ReconnectInfo;
 import net.sourceforge.squirrel_sql.fw.id.IIdentifier;
+import net.sourceforge.squirrel_sql.fw.sql.SQLConnector.DriverReference;
 import net.sourceforge.squirrel_sql.fw.util.StringUtilities;
 import net.sourceforge.squirrel_sql.fw.util.Utilities;
 import net.sourceforge.squirrel_sql.fw.util.log.ILogger;
 import net.sourceforge.squirrel_sql.fw.util.log.LoggerController;
 
+import javax.swing.SwingWorker;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.IOException;
+import java.net.URLClassLoader;
 import java.sql.Driver;
 import java.util.HashMap;
 import java.util.Map;
@@ -44,16 +48,16 @@ public class SQLDriverManager
 	private static final ILogger s_log = LoggerController.createLogger(SQLDriverManager.class);
 
 	/**
-	 * Collection of instances of <TT>java.sql.Driver</TT> objects keyed
+	 * Collection of instances of <TT>ISQLDriver</TT> objects keyed
 	 * by the <TT>SQLDriver.getIdentifier()</TT>.
 	 */
-	private Map<IIdentifier, Driver> _driverInfo = new HashMap<>();
+	private Map<IIdentifier, ISQLDriver> _driverInfo = new HashMap<>();
 
 	/**
-	 * Collection of the <TT>SQLDriverClassLoader</TT> class loaders used for
+	 * Collection of loaded <TT>DriverReference</TT> for
 	 * each driver. keyed by <TT>SQLDriver.getIdentifier()</TT>.
 	 */
-	private Map<IIdentifier, SQLDriverClassLoader> _classLoaders = new HashMap<>();
+	private Map<IIdentifier, DriverReference> _loadedDrivers = new HashMap<>();
 
 	private MyDriverListener _myDriverListener = new MyDriverListener();
 
@@ -63,16 +67,25 @@ public class SQLDriverManager
 		{
 			unregisterSQLDriver(sqlDriver);
 			sqlDriver.addPropertyChangeListener(_myDriverListener);
-			SQLDriverClassLoader loader = new SQLDriverClassLoader(sqlDriver);
+			_driverInfo.put(sqlDriver.getIdentifier(), sqlDriver);
 
-			Driver driver = (Driver) (Class.forName(sqlDriver.getDriverClassName(), false, loader).getDeclaredConstructor().newInstance());
+			Driver driver = getDriver(sqlDriver.getIdentifier());
 
-			_driverInfo.put(sqlDriver.getIdentifier(), driver);
-			_classLoaders.put(sqlDriver.getIdentifier(), loader);
-			sqlDriver.setJDBCDriverClassLoaded(true);
+			new SwingWorker<Void, Void>()
+			{
+				@Override protected Void doInBackground() throws Exception
+				{
+					unloadDriver(sqlDriver.getIdentifier(), driver);
+					return null;
+				}
+			}.execute();
 		}
-		catch (ClassNotFoundException e)
+		catch (DriverLoadException e)
 		{
+			if (e.getCause() instanceof ClassNotFoundException)
+			{
+				throw (ClassNotFoundException) e.getCause();
+			}
 			throw e;
 		}
 		catch (Exception e)
@@ -86,7 +99,82 @@ public class SQLDriverManager
 		sqlDriver.setJDBCDriverClassLoaded(false);
 		sqlDriver.removePropertyChangeListener(_myDriverListener);
 		_driverInfo.remove(sqlDriver.getIdentifier());
-		_classLoaders.remove(sqlDriver.getIdentifier());
+		_loadedDrivers.remove(sqlDriver.getIdentifier());
+	}
+
+	public synchronized void unloadDriver(IIdentifier sqlDriverId, Driver jdbcDriver)
+	{
+		Driver driverToUnload = jdbcDriver;
+		Driver currentDriver = (sqlDriverId == null) ? null : getLoadedDriver(sqlDriverId);
+		if (driverToUnload == null)
+		{
+			driverToUnload = currentDriver;
+		}
+		if (driverToUnload == null)
+		{
+			s_log.debug("Nothing to unload: " + sqlDriverId);
+			return;
+		}
+
+		ClassLoader classLoader = driverToUnload.getClass().getClassLoader();
+		if (classLoader instanceof URLClassLoader)
+		{
+			try
+			{
+				((URLClassLoader) classLoader).close();
+			}
+			catch (IOException e)
+			{
+				s_log.warn("Problem unloading driver", e);
+			}
+		}
+
+		if (driverToUnload == currentDriver)
+		{
+			_loadedDrivers.remove(sqlDriverId);
+		}
+	}
+
+	private synchronized Driver getDriver(IIdentifier sqlDriverId)
+			throws DriverLoadException
+	{
+		Driver jdbcDriver = getLoadedDriver(sqlDriverId);
+		if (jdbcDriver == null)
+		{
+			ISQLDriver sqlDriver = _driverInfo.get(sqlDriverId);
+			if (sqlDriver == null)
+			{
+				return null;
+			}
+
+			jdbcDriver = SQLConnector.newJdbcDriver(sqlDriver);
+			sqlDriver.setJDBCDriverClassLoaded(true);
+			_loadedDrivers.put(sqlDriverId, new DriverReference(jdbcDriver));
+		}
+		return jdbcDriver;
+	}
+
+	/**
+	 * Unlike {@code getJDBCDriver()} this will not load JDBC driver instance, if
+	 * not loaded already.
+	 *
+	 * @param   sqlDriverId  the {@code ISQLDriver} identifier to get JDBC driver for
+	 * @return  The loaded JDBC driver, or {@code null}
+	 * @see     #getJDBCDriver(IIdentifier)
+	 */
+	public synchronized Driver getLoadedDriver(IIdentifier sqlDriverId)
+	{
+		DriverReference ref = _loadedDrivers.get(sqlDriverId);
+		if (ref == null)
+		{
+			return null;
+		}
+		Driver driver = ref.get();
+		if (driver == null)
+		{
+			_loadedDrivers.remove(sqlDriverId);
+		}
+		return driver;
 	}
 
 	public ISQLConnection getConnection(ISQLDriver sqlDriver, SQLAlias alias, String user, String pw)
@@ -105,7 +193,7 @@ public class SQLDriverManager
 		Driver driver;
 		synchronized (this)
 		{
-			driver = _driverInfo.get(sqlDriver.getIdentifier());
+			driver = getDriver(sqlDriver.getIdentifier());
 		}
 
 		return SQLConnector.getSqlConnection(sqlDriver, alias, user, pw, props, reconnectInfo, driver);
@@ -128,7 +216,7 @@ public class SQLDriverManager
 			throw new IllegalArgumentException("IIdentifier == null");
 		}
 
-		return _driverInfo.get(id);
+		return getDriver(id);
 	}
 
 	/**
@@ -148,7 +236,12 @@ public class SQLDriverManager
 			throw new IllegalArgumentException("SQLDriverClassLoader == null");
 		}
 
-		return _classLoaders.get(driver.getIdentifier());
+		Driver jdbcDriver = getLoadedDriver(driver.getIdentifier());
+		if (jdbcDriver == null)
+		{
+			return null;
+		}
+		return (SQLDriverClassLoader) jdbcDriver.getClass().getClassLoader();
 	}
 
 	private final class MyDriverListener implements PropertyChangeListener

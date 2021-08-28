@@ -949,6 +949,7 @@ public class Application implements IApplication
 		// NUMBER_OFF_CALLS_TO_INDICATE_NEW_TASK = 6
 		indicateNewStartupTask(splash, s_stringMgr.getString("Application.splash.createjdbcmgr"));
 		initDriverManager();
+		_sessionManager.addSessionListener(new DriverUnloadListener(_driverMgr));
 
 		// NUMBER_OFF_CALLS_TO_INDICATE_NEW_TASK = 7
 		indicateNewStartupTask(splash, s_stringMgr.getString("Application.splash.loadingjdbc"));
