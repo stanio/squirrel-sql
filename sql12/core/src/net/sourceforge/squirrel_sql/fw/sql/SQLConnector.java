@@ -4,7 +4,6 @@ import net.sourceforge.squirrel_sql.client.gui.db.SQLAlias;
 import net.sourceforge.squirrel_sql.client.session.action.reconnect.ReconnectInfo;
 import net.sourceforge.squirrel_sql.fw.util.StringManager;
 import net.sourceforge.squirrel_sql.fw.util.StringManagerFactory;
-import net.sourceforge.squirrel_sql.fw.util.Utilities;
 import net.sourceforge.squirrel_sql.fw.util.log.ILogger;
 import net.sourceforge.squirrel_sql.fw.util.log.LoggerController;
 
@@ -24,9 +23,8 @@ public class SQLConnector
    private static final StringManager s_stringMgr = StringManagerFactory.getStringManager(SQLConnector.class);
 
    public static SQLConnection getSqlConnection(ISQLDriver sqlDriver, SQLAlias alias, String user, String pw, SQLDriverPropertyCollection props, ReconnectInfo reconnectInfo, Driver driver)
+         throws SQLException, DriverLoadException
    {
-      try
-      {
          Properties myProps = new Properties();
          if (props != null)
          {
@@ -70,11 +68,6 @@ public class SQLConnector
             throw new SQLException(s_stringMgr.getString("SQLDriverManager.error.noconnection"));
          }
          return new SQLConnection(jdbcConn, props, sqlDriver);
-      }
-      catch (Exception e)
-      {
-         throw Utilities.wrapRuntime(e);
-      }
    }
 
    static Driver newJdbcDriver(ISQLDriver sqlDriver) throws DriverLoadException

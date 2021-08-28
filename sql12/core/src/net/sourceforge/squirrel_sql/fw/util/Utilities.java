@@ -36,6 +36,8 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -489,7 +491,7 @@ public class Utilities
       return TimeOutUtil.callWithTimeout(() -> callable.call());
    }
 
-   public static <T> T callWithTimeout(Callable<T> callable, int timeoutMilliSeconds) throws TimeoutException, ExecutionException
+   public static <T> T callWithTimeout(Callable<T> callable, int timeOutMillis) throws TimeoutException, ExecutionException
    {
       return TimeOutUtil.callWithTimeout(() -> callable.call(), timeOutMillis);
    }
