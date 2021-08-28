@@ -28,7 +28,6 @@ import net.sourceforge.squirrel_sql.fw.util.log.LoggerController;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.io.IOException;
 import java.sql.Driver;
 import java.util.HashMap;
 import java.util.Map;
@@ -87,18 +86,7 @@ public class SQLDriverManager
 		sqlDriver.setJDBCDriverClassLoaded(false);
 		sqlDriver.removePropertyChangeListener(_myDriverListener);
 		_driverInfo.remove(sqlDriver.getIdentifier());
-		SQLDriverClassLoader cl = _classLoaders.remove(sqlDriver.getIdentifier());
-		try
-		{
-			if (cl != null)
-			{
-				cl.close();
-			}
-		}
-		catch (IOException e)
-		{
-			s_log.warn("", e);
-		}
+		_classLoaders.remove(sqlDriver.getIdentifier());
 	}
 
 	public ISQLConnection getConnection(ISQLDriver sqlDriver, SQLAlias alias, String user, String pw)
