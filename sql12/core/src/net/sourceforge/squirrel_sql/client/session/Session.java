@@ -605,6 +605,7 @@ class Session implements ISession
          try
          {
             _sessionConnectionPool.close();
+            _sessionConnectionPool.getMasterSQLConnection().removePropertyChangeListener(_connLis);
          }
          finally
          {
@@ -724,6 +725,7 @@ class Session implements ISession
             // Do this after _sessionConnectionPool is initialized because it accesses the pool in SetSessionAutoCommitTask
             _props.setAutoCommit(connState.getAutoCommit());
          }
+         conn.addPropertyChangeListener(_connLis);
 
          final String msg = s_stringMgr.getString("Session.reconn", _alias.getName());
          _msgHandler.showMessage(msg);
