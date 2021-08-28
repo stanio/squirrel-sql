@@ -5,21 +5,23 @@ import net.sourceforge.squirrel_sql.client.IApplication;
 import net.sourceforge.squirrel_sql.client.session.ISession;
 import net.sourceforge.squirrel_sql.client.session.event.SessionAdapter;
 import net.sourceforge.squirrel_sql.client.session.event.SessionEvent;
-import net.sourceforge.squirrel_sql.fw.id.IIdentifier;
 import net.sourceforge.squirrel_sql.fw.sql.ISQLDriver;
-import net.sourceforge.squirrel_sql.fw.sql.SQLDriverManager;
 import net.sourceforge.squirrel_sql.fw.util.log.ILogger;
 import net.sourceforge.squirrel_sql.fw.util.log.LoggerController;
 import net.sourceforge.squirrel_sql.plugins.derby.DerbyPlugin.i18n;
 
 import javax.swing.JOptionPane;
 import java.lang.ref.WeakReference;
+import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.SQLException;
+import java.sql.SQLWarning;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -41,11 +43,7 @@ class EmbeddedDerbySessionListener extends SessionAdapter implements Application
 
    private final DerbyPlugin _derbyPlugin;
 
-   private Map<String, List<WeakReference<ISession>>> _embeddedSessions = new HashMap<>();
-
-   // Reference to the JDBC driver so we could perform shutdown,
-   // even when session references have been cleared.
-   private volatile ISQLDriver _embeddedDriver;
+   private final EmbeddedSessions _embeddedSessions = new EmbeddedSessions();
 
    private volatile boolean _appShuttingDown;
 
@@ -69,20 +67,52 @@ class EmbeddedDerbySessionListener extends SessionAdapter implements Application
    {
       if (isEmbeddedDerby(session))
       {
-         _embeddedSessions.computeIfAbsent(getDatabaseName(session), k -> new ArrayList<>())
-               .add(new WeakReference<>(session));
+         ISQLDriver sqlDriver = session.getDriver();
+         Driver jdbcDriver = getApplication()
+               .getSQLDriverManager().getJDBCDriver(sqlDriver.getIdentifier());
+         Map<String, List<WeakReference<ISession>>> activeSessions =
+               _embeddedSessions.computeIfAbsent(jdbcDriver, drv -> new HashMap<>());
+         activeSessions.computeIfAbsent(getDatabaseName(session), k -> new ArrayList<>())
+                       .add(new WeakReference<>(session));
+      }
+   }
 
-         _embeddedDriver = session.getDriver();
+   @Override
+   public void reconnected(SessionEvent evt)
+   {
+      sessionStarted(evt.getSession());
+   }
+
+   @Override
+   public void connectionClosedForReconnect(SessionEvent evt)
+   {
+      if (isEmbeddedDerby(evt.getSession()))
+      {
+         ISession session = evt.getSession();
+         Driver oldDriver = _embeddedSessions.removeSesion(session);
+         Driver newDriver = getApplication().getSQLDriverManager()
+               .getJDBCDriver(session.getDriver().getIdentifier());
+         if (oldDriver != newDriver)
+         {
+            flushEmbeddedSessions();
+         }
+      }
+   }
+
+   @Override
+   public void allSessionsClosed()
+   {
+      if (!_embeddedSessions.isEmpty())
+      {
+         s_log.warn("Not all embedded sessions have been shut down properly: "
+                  + _embeddedSessions);
       }
    }
 
    @Override
    public void sessionClosed(SessionEvent evt)
    {
-      if (flushEmbeddedSessions())
-      {
-         shutdownEmbeddedDerby();
-      }
+      flushEmbeddedSessions();
    }
 
    private boolean shouldDrop(String dbName)
@@ -99,16 +129,36 @@ class EmbeddedDerbySessionListener extends SessionAdapter implements Application
       return option == JOptionPane.YES_OPTION;
    }
 
-   private boolean flushEmbeddedSessions()
+   private void flushEmbeddedSessions()
    {
       if (_embeddedSessions.isEmpty())
       {
-         return false;
+         return;
       }
 
-      for (Iterator<Map.Entry<String, List<WeakReference<ISession>>>> iter = _embeddedSessions.entrySet().iterator(); iter.hasNext(); )
+      Iterator<Map.Entry<Driver, Map<String, List<WeakReference<ISession>>>>> iter = _embeddedSessions.entrySet().iterator();
+      while (iter.hasNext())
       {
-         Map.Entry<String, List<WeakReference<ISession>>> entry = iter.next();
+         Map.Entry<Driver, Map<String, List<WeakReference<ISession>>>> entry = iter.next();
+         Driver jdbcDr = entry.getKey();
+         Map<String, List<WeakReference<ISession>>> activeSessions = entry.getValue();
+
+         flushEmbeddedSessions(jdbcDr, activeSessions.entrySet().iterator());
+
+         if (activeSessions.isEmpty())
+         {
+            iter.remove();
+            shutdownEmbeddedDerby(jdbcDr);
+         }
+      }
+   }
+
+   private void flushEmbeddedSessions(Driver jdbcDr,
+         Iterator<Map.Entry<String, List<WeakReference<ISession>>>> activeSessions)
+   {
+      while (activeSessions.hasNext())
+      {
+         Map.Entry<String, List<WeakReference<ISession>>> entry = activeSessions.next();
          if (flushEmbeddedSessions(entry.getValue()))
          {
             String dbName = entry.getKey();
@@ -116,28 +166,27 @@ class EmbeddedDerbySessionListener extends SessionAdapter implements Application
             {
                if (shouldDrop(dbName))
                {
-                  shutdownEmbeddedDerby(dbName, true);
-                  iter.remove();
+                  shutdownEmbeddedDerby(jdbcDr, dbName, true);
+                  activeSessions.remove();
                }
             }
             else if (!dbName.equals(UNKNOWN_DBNAME))
             {
-               shutdownEmbeddedDerby(dbName);
-               iter.remove();
+               shutdownEmbeddedDerby(jdbcDr, dbName);
+               activeSessions.remove();
             }
          }
       }
-      return _embeddedSessions.isEmpty();
    }
 
-   private boolean flushEmbeddedSessions(List<WeakReference<ISession>> list)
+   private boolean flushEmbeddedSessions(Collection<WeakReference<ISession>> sessionReferences)
    {
-      if (list.isEmpty())
+      if (sessionReferences.isEmpty())
       {
          return false;
       }
 
-      Iterator<WeakReference<ISession>> iter = list.iterator();
+      Iterator<WeakReference<ISession>> iter = sessionReferences.iterator();
       while (iter.hasNext())
       {
          ISession session = iter.next().get();
@@ -146,12 +195,14 @@ class EmbeddedDerbySessionListener extends SessionAdapter implements Application
             iter.remove();
          }
       }
-      return list.isEmpty();
+      return sessionReferences.isEmpty();
    }
 
    static boolean isEmbeddedDerby(final ISession session)
    {
-      return session.getDriver().getDriverClassName().startsWith("org.apache.derby.jdbc.EmbeddedDriver");
+      String driverClassName = session.getDriver().getDriverClassName();
+      return Arrays.asList("org.apache.derby.jdbc.AutoloadedDriver",
+            "org.apache.derby.jdbc.EmbeddedDriver").contains(driverClassName);
    }
 
    private static String getDatabaseName(ISession session)
@@ -161,7 +212,7 @@ class EmbeddedDerbySessionListener extends SessionAdapter implements Application
          String jdbcURL = session.getMetaData().getURL();
          int semIdx = jdbcURL.indexOf(';');
          return (semIdx > 0) ? jdbcURL.substring("jdbc:derby:".length(), semIdx)
-               : jdbcURL.substring("jdbc:derby:".length());
+                             : jdbcURL.substring("jdbc:derby:".length());
       }
       catch (SQLException e)
       {
@@ -175,9 +226,9 @@ class EmbeddedDerbySessionListener extends SessionAdapter implements Application
     *
     * @author Alex Pivovarov
     */
-   private void shutdownEmbeddedDerby()
+   private void shutdownEmbeddedDerby(Driver jdbcDr)
    {
-      shutdownEmbeddedDerby("");
+      shutdownEmbeddedDerby(jdbcDr, "");
    }
 
    /**
@@ -185,55 +236,72 @@ class EmbeddedDerbySessionListener extends SessionAdapter implements Application
     *
     * @param dbName the database name to shut down;
     */
-   private void shutdownEmbeddedDerby(String dbName)
+   private void shutdownEmbeddedDerby(Driver jdbcDr, String dbName)
    {
-      shutdownEmbeddedDerby(dbName, false);
+      shutdownEmbeddedDerby(jdbcDr, dbName, false);
    }
 
-   private void shutdownEmbeddedDerby(String dbName, boolean drop)
+   private void shutdownEmbeddedDerby(Driver jdbcDr, String dbName, boolean drop)
    {
-      try
+      //Shutdown Embedded Derby DB
+      Properties params = new Properties();
+      params.setProperty(drop ? "drop" : "shutdown", "true");
+      try (Connection con = jdbcDr.connect("jdbc:derby:" + dbName, params))
       {
-         ISQLDriver iSqlDr = _embeddedDriver;
-         if (_embeddedDriver == null)
+         SQLWarning warning = con.getWarnings();
+         while (warning != null)
          {
-            s_log.warn("shutdownEmbeddedDerby: driver reference is null");
-            return;
+            s_log.warn("", warning);
+            warning = warning.getNextWarning();
          }
-         //the code bellow is only for Embedded Derby Driver
-         IIdentifier drId = iSqlDr.getIdentifier();
-         SQLDriverManager sqlDrMan = getApplication().getSQLDriverManager();
-         //Getting java.sql.Driver to run shutdown command
-         Driver jdbcDr = sqlDrMan.getJDBCDriver(drId);
-         //Shutdown Embedded Derby DB
-         try
+         getApplication().getMessageHandler().showWarningMessage("Derby database may not be shut down");
+      }
+      catch (SQLException e)
+      {
+         //it is always thrown as said in Embedded Derby API.
+         //So it is not error it is info
+         if (Arrays.asList("08006", "XJ015").contains(e.getSQLState()))
          {
-            jdbcDr.connect("jdbc:derby:" + dbName + ";"
-                                 + (drop ? "drop" : "shutdown") + "=true", new Properties());
+            getApplication().getMessageHandler().showMessage(e.getMessage());
          }
-         catch (SQLException e)
+         else
          {
-            //it is always thrown as said in Embedded Derby API.
-            //So it is not error it is info
-            if (Arrays.asList("08006", "XJ015").contains(e.getSQLState()))
-            {
-               getApplication().getMessageHandler().showMessage(e.getMessage());
-            }
-            else
-            {
-                getApplication().getMessageHandler().showErrorMessage(e);
-            }
-         }
-         //Re-registering driver is necessary for Embedded Derby
-         if (dbName.isEmpty())
-         {
-            sqlDrMan.registerSQLDriver(iSqlDr);
-            _embeddedDriver = null;
+            getApplication().getMessageHandler().showErrorMessage(e);
          }
       }
       catch (Exception e)
       {
          s_log.error(e.getMessage(), e);
+      }
+   }
+
+   /**
+    * Map driver instances to open databases to active session list.
+    */
+   private static class EmbeddedSessions
+         extends IdentityHashMap<Driver, Map<String, List<WeakReference<ISession>>>>
+   {
+      private static final long serialVersionUID = 6994014714179557637L;
+
+      Driver removeSesion(ISession session)
+      {
+         for (Map.Entry<Driver, Map<String, List<WeakReference<ISession>>>> drvEntry : entrySet())
+         {
+            for (Map.Entry<String, List<WeakReference<ISession>>> dbEntry : drvEntry.getValue().entrySet())
+            {
+               for (WeakReference<ISession> ref : dbEntry.getValue())
+               {
+                  if (ref.get() == session)
+                  {
+                     // Replace with null reference so the flush mechanic would kick-in
+                     dbEntry.getValue().remove(ref);
+                     dbEntry.getValue().add(new WeakReference<>(null));
+                     return drvEntry.getKey();
+                  }
+               }
+            }
+         }
+         return null;
       }
    }
 
