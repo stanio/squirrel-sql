@@ -6,6 +6,7 @@ import net.sourceforge.squirrel_sql.client.session.ISession;
 import net.sourceforge.squirrel_sql.client.session.event.SessionAdapter;
 import net.sourceforge.squirrel_sql.client.session.event.SessionEvent;
 import net.sourceforge.squirrel_sql.fw.sql.ISQLDriver;
+import net.sourceforge.squirrel_sql.fw.sql.SQLDriverManager;
 import net.sourceforge.squirrel_sql.fw.util.log.ILogger;
 import net.sourceforge.squirrel_sql.fw.util.log.LoggerController;
 import net.sourceforge.squirrel_sql.plugins.derby.DerbyPlugin.i18n;
@@ -159,12 +160,17 @@ class EmbeddedDerbySessionListener extends SessionAdapter implements Application
       while (activeSessions.hasNext())
       {
          Map.Entry<String, List<WeakReference<ISession>>> entry = activeSessions.next();
+         SQLDriverManager drvMgr = _derbyPlugin.getApplication().getSQLDriverManager();
+         boolean currentDriver = entry.getValue().stream()
+               .map(ref -> ref.get()).filter(Objects::nonNull)
+               .map(session -> session.getDriver().getIdentifier())
+               .anyMatch(id -> drvMgr.getLoadedDriver(id) == jdbcDr);
          if (flushEmbeddedSessions(entry.getValue()))
          {
             String dbName = entry.getKey();
             if (dbName.startsWith("memory:"))
             {
-               if (shouldDrop(dbName))
+               if (!currentDriver || shouldDrop(dbName))
                {
                   shutdownEmbeddedDerby(jdbcDr, dbName, true);
                   activeSessions.remove();
