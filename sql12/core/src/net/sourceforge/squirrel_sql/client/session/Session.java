@@ -704,7 +704,16 @@ class Session implements ISession
       catch (Throwable th)
       {
          final String msg = s_stringMgr.getString("Session.reconnError", _alias.getName());
-         _msgHandler.showErrorMessage(msg + "\n" + th.toString());
+         if (th instanceof SQLException)
+         {
+            SQLException sqlEx = new SQLException(msg);
+            sqlEx.setNextException((SQLException) th);
+            _msgHandler.showErrorMessage(th, null);
+         }
+         else
+         {
+            _msgHandler.showErrorMessage(msg + "\n" + th.getMessage());
+         }
          s_log.error(msg, th);
          _app.getSessionManager().fireReconnectFailed(this);
       }

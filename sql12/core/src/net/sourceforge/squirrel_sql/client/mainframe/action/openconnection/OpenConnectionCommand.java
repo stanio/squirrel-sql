@@ -32,6 +32,7 @@ import net.sourceforge.squirrel_sql.fw.util.Utilities;
 
 import javax.swing.*;
 import java.sql.DriverManager;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
@@ -86,7 +87,7 @@ public class OpenConnectionCommand
     */
 	public void executeConnectAndWaitForResultInBackground(final OpenConnectionCommandListener openConnectionCommandListener)
    {
-      final Future future = OpenConnectionThreadPool.submit(() -> executeConnect());
+      final Future<?> future = OpenConnectionThreadPool.submit(() -> { executeConnect(); return null; });
 
       OpenConnectionThreadPool.submit(() -> awaitConnection(future, openConnectionCommandListener, false) );
 	}
@@ -95,9 +96,10 @@ public class OpenConnectionCommand
    {
       //executeConnect();
 
-      Runnable taskConnect = () -> executeConnect();
-
-      final Future future = OpenConnectionThreadPool.submit(taskConnect);
+      final Future<?> future = OpenConnectionThreadPool.submit(() -> {
+         executeConnect();
+         return null;
+      });
 
       Throwable[] ref = new Throwable[1];
 
@@ -109,7 +111,7 @@ public class OpenConnectionCommand
       }
    }
 
-   private void awaitConnection(Future future, final OpenConnectionCommandListener openConnectionCommandListener, boolean processImmediately)
+   private void awaitConnection(Future<?> future, final OpenConnectionCommandListener openConnectionCommandListener, boolean processImmediately)
    {
       try
       {
@@ -131,6 +133,10 @@ public class OpenConnectionCommand
             SwingUtilities.invokeLater(() -> openConnectionCommandListener.openConnectionFinished(null));
          }
       }
+      catch (ExecutionException e)
+      {
+         SwingUtilities.invokeLater(() -> openConnectionCommandListener.openConnectionFinished(e.getCause()));
+      }
       catch (final Throwable t)
       {
          if (processImmediately)
@@ -144,20 +150,14 @@ public class OpenConnectionCommand
       }
    }
 
-   private void executeConnect()
+   private void executeConnect() throws Exception
    {
       _conn = null;
       final IIdentifier driverID = _sqlAlias.getDriverIdentifier();
       final ISQLDriver sqlDriver = Main.getApplication().getAliasesAndDriversManager().getDriver(driverID);
       final SQLDriverManager mgr = Main.getApplication().getSQLDriverManager();
-      try
-      {
+
          _conn = mgr.getConnection(sqlDriver, _sqlAlias, _userName, _password, _props, _reconnectInfo);
-      }
-      catch (Throwable th)
-      {
-         throw Utilities.wrapRuntime(th);
-      }
    }
 
    /**

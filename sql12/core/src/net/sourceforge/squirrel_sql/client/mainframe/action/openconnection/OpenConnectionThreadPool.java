@@ -1,5 +1,6 @@
 package net.sourceforge.squirrel_sql.client.mainframe.action.openconnection;
 
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -8,7 +9,12 @@ public class OpenConnectionThreadPool
 {
    private static ExecutorService s_executorService;
 
-   static Future submit(Runnable runnable)
+   static Future<?> submit(Runnable runnable)
+   {
+      return submit(Executors.callable(runnable));
+   }
+
+   static <T> Future<T> submit(Callable<T> runnable)
    {
       // A bit thread unclean. May result in duplicate ExecutorService creation.
       if (null == s_executorService)

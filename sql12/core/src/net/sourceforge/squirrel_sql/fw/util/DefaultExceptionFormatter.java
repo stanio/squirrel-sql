@@ -165,32 +165,17 @@ public class DefaultExceptionFormatter implements ExceptionFormatter {
            .append(" bytes were transferred.");
         return buf.toString();
     }
-    
-    private String getSQLWarningMessage(SQLWarning ex) {
-        StringBuilder buf = new StringBuilder();
-        while (ex != null)
-        {
-           buf.append(buildMessage("Warning:   ", ex));
-           ex = ex.getNextWarning();
-        }
 
-        return buf.toString();
+    private String getSQLWarningMessage(SQLWarning ex) {
+       return buildMessage("Warning: ", ex);
     }
-    
+
     private String getSQLExceptionMessage(SQLException ex) {
-        StringBuilder buf = new StringBuilder();
-        while (ex != null)
-        {
-            buf.append(buildMessage("Error: ", ex));
-            if (s_log.isDebugEnabled()) {
-                s_log.debug("Error", ex);
-            }
-            ex = ex.getNextException();
-            if (ex != null) {
-                buf.append("\n");
-            }
-        }                
-        return buf.toString();
+       if (s_log.isDebugEnabled())
+       {
+          s_log.debug("Error", ex);
+       }
+       return buildMessage("Error: ", ex);
     }
 
     private String buildMessage(String prefix, SQLException ex) {
@@ -201,6 +186,16 @@ public class DefaultExceptionFormatter implements ExceptionFormatter {
         result.append(ex.getSQLState());
         result.append("\nErrorCode: ");
         result.append(ex.getErrorCode());
+
+        SQLException next = ex.getNextException();
+        while (next != null)
+        {
+           result.append("\n\tNext: ").append(next.getMessage())
+                 .append("\n\tSQLState:  ").append(next.getSQLState())
+                 .append("\n\tErrorCode: ").append(next.getErrorCode());
+           next = next.getNextException();
+        }
+
         return result.toString();
     }
 

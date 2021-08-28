@@ -33,6 +33,7 @@ import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.net.URLClassLoader;
 import java.sql.Driver;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -178,17 +179,20 @@ public class SQLDriverManager
 	}
 
 	public ISQLConnection getConnection(ISQLDriver sqlDriver, SQLAlias alias, String user, String pw)
+	      throws SQLException, DriverLoadException
 	{
 		return getConnection(sqlDriver, alias, user, pw, null);
 	}
 
 	public SQLConnection getConnection(ISQLDriver sqlDriver, SQLAlias alias, String user, String pw, SQLDriverPropertyCollection props)
+	      throws SQLException, DriverLoadException
 	{
 		return getConnection(sqlDriver, alias, user, pw, props, null);
 	}
 
 
 	public SQLConnection getConnection(ISQLDriver sqlDriver, SQLAlias alias, String user, String pw, SQLDriverPropertyCollection props, ReconnectInfo reconnectInfo)
+	      throws SQLException, DriverLoadException
 	{
 		Driver driver;
 		synchronized (this)
@@ -209,7 +213,7 @@ public class SQLDriverManager
 	 * @throws	IllegalArgumentException
 	 *			Thrown if <TT>null</TT> IIdentifier</TT> passed.
 	 */
-	public Driver getJDBCDriver(IIdentifier id)
+	public Driver getJDBCDriver(IIdentifier id) throws DriverLoadException
 	{
 		if (id == null)
 		{
