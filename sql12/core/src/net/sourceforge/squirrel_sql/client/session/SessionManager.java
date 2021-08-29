@@ -43,12 +43,15 @@ import javax.swing.event.EventListenerList;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedDeque;
 
 /**
  * This class manages sessions.
@@ -61,12 +64,12 @@ public class SessionManager
 
    private static final StringManager s_stringMgr = StringManagerFactory.getStringManager(SessionManager.class);
 
-   private ISession _activeSession;
+   private volatile ISession _activeSession;
 
-   private final ArrayList<ISession> _sessionsList = new ArrayList<>();
+   private final Deque<ISession> _sessionsList = new ConcurrentLinkedDeque<>();
 
    /** Map of sessions keyed by session ID. */
-   private final Map<IIdentifier, ISession> _sessionsById = new HashMap<>();
+   private final Map<IIdentifier, ISession> _sessionsById = new ConcurrentHashMap<>();
 
    private EventListenerList listenerList = new EventListenerList();
 
@@ -75,8 +78,8 @@ public class SessionManager
    private ArrayList<IAllowedSchemaChecker> _allowedSchemaCheckers = new ArrayList<>();
    private Hashtable<IIdentifier, String[]> _allowedSchemasBySessionID = new Hashtable<>();
    private Hashtable<IIdentifier, String[]> _allSchemasBySessionID = new Hashtable<>();
-   private HashSet<IIdentifier> _inCloseSession = new HashSet<>();
-   private Set<IIdentifier> _inCreateSession = Collections.synchronizedSet(new HashSet());
+   private Set<IIdentifier> _inCloseSession = Collections.synchronizedSet(new HashSet<>());
+   private Set<IIdentifier> _inCreateSession = Collections.synchronizedSet(new HashSet<>());
 
    public SessionManager()
    {
@@ -245,7 +248,7 @@ public class SessionManager
             {
                if (!_sessionsList.isEmpty())
                {
-                  setActiveSession(_sessionsList.get(_sessionsList.size() - 1), false);
+                  setActiveSession(_sessionsList.getLast(), false);
                }
                else
                {
