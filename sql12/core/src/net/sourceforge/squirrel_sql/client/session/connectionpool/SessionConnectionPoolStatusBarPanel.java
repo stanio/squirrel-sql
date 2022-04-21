@@ -3,8 +3,8 @@ package net.sourceforge.squirrel_sql.client.session.connectionpool;
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import javax.swing.JComponent;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
 
 import net.sourceforge.squirrel_sql.client.Main;
 import net.sourceforge.squirrel_sql.client.resources.SquirrelResources;
@@ -17,15 +17,13 @@ public class SessionConnectionPoolStatusBarPanel extends JPanel
 {
    private static final StringManager s_stringMgr = StringManagerFactory.getStringManager(SessionConnectionPoolStatusBarPanel.class);
 
-   JTextField textLbl = new JTextField();
+   JLabel textLbl = new JLabel();
    SmallTabButton btnState;
    SmallTabButton btnConfigureConnectionPoolSize;
 
    public SessionConnectionPoolStatusBarPanel(JComponent parent)
    {
       super(new BorderLayout());
-
-      textLbl.setEditable(false);
 
       add(textLbl, BorderLayout.CENTER);
       GUIUtils.inheritBackground(textLbl);
