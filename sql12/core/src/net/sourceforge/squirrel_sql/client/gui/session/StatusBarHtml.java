@@ -3,7 +3,6 @@ package net.sourceforge.squirrel_sql.client.gui.session;
 import net.sourceforge.squirrel_sql.client.session.mainpanel.objecttree.ObjectTreeNode;
 
 import javax.swing.tree.TreePath;
-import java.util.ArrayList;
 
 public class StatusBarHtml
 {
@@ -32,13 +31,13 @@ public class StatusBarHtml
    {
       final int pathIndex = Integer.parseInt(linkDescription);
 
-      ArrayList path = new ArrayList();
+      TreePath path = treePathForLink;
 
-      for (int i = 0; i <= pathIndex; i++)
+      for (int i = treePathForLink.getPathCount() - 1; i > pathIndex; i--)
       {
-         path.add(treePathForLink.getPath()[i]);
+         path = path.getParentPath();
       }
 
-      return new TreePath(path.toArray(new Object[0]));
+      return path;
    }
 }
