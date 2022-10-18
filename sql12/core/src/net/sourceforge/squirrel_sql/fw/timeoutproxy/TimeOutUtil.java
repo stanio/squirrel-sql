@@ -6,6 +6,7 @@ import net.sourceforge.squirrel_sql.fw.util.log.ILogger;
 import net.sourceforge.squirrel_sql.fw.util.log.LoggerController;
 
 import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -74,11 +75,13 @@ public class TimeOutUtil
     * else {@link #STD_INVOKE_WITH_TIMEOUT_MILLIS} is used.
     */
    public static <T> T callWithTimeout(TimeOutableCaller<T> timeoutableCaller)
+         throws InterruptedException, ExecutionException, TimeoutException
    {
       return callWithTimeout(timeoutableCaller, STD_INVOKE_WITH_TIMEOUT_MILLIS);
    }
 
    public static <T> T callWithTimeout(TimeOutableCaller<T> timeoutableCaller, int timeOutMillis)
+         throws InterruptedException, ExecutionException, TimeoutException
    {
       boolean usedMetaDataLoadingTimeout = false;
       try
@@ -101,18 +104,19 @@ public class TimeOutUtil
          if(usedMetaDataLoadingTimeout)
          {
             final String msg = "Timeout as configured in menu File --> New Session Properties --> tab SQL --> section \"Meta data loading\" occured.";
-            s_log.error(msg);
-            throw new RuntimeException(msg, e);
+            s_log.warn(msg);
+            //throw new RuntimeException(msg, e);
          }
-         else
-         {
-            throw Utilities.wrapRuntime(e);
-         }
+         //else
+         //{
+         //   throw Utilities.wrapRuntime(e);
+         //}
+         throw e;
       }
-      catch (Exception e)
-      {
-         throw Utilities.wrapRuntime(e);
-      }
+      //catch (Exception e)
+      //{
+      //   throw Utilities.wrapRuntime(e);
+      //}
    }
 
    private static Callable<Void> callable(TimeOutableInvoker timeoutableInvoker)

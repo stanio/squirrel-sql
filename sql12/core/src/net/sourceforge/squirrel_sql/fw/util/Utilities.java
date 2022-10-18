@@ -486,12 +486,14 @@ public class Utilities
       return sqlEx + ", SQL State: " + sqlEx.getSQLState() + ", Error Code: " + sqlEx.getErrorCode();
    }
 
-   public static <T> T callWithTimeout(Callable<T> callable) throws TimeoutException, ExecutionException
+   public static <T> T callWithTimeout(Callable<T> callable)
+         throws TimeoutException, ExecutionException, InterruptedException
    {
       return TimeOutUtil.callWithTimeout(() -> callable.call());
    }
 
-   public static <T> T callWithTimeout(Callable<T> callable, int timeOutMillis) throws TimeoutException, ExecutionException
+   public static <T> T callWithTimeout(Callable<T> callable, int timeOutMillis)
+         throws TimeoutException, ExecutionException, InterruptedException
    {
       return TimeOutUtil.callWithTimeout(() -> callable.call(), timeOutMillis);
    }
