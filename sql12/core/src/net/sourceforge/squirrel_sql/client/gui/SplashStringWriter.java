@@ -114,6 +114,8 @@ public class SplashStringWriter
       paintProgress();
 
       paintStrings();
+
+      _splashScreen.update();
    }
 
    private void paintStrings()
@@ -158,7 +160,6 @@ public class SplashStringWriter
       {
          _graphics.setColor(fg);
          _graphics.drawString(s, X_DIST, y);
-         _splashScreen.update();
       }
 
       return s;
