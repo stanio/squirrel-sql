@@ -5,6 +5,7 @@ import net.sourceforge.squirrel_sql.fw.util.log.ILogger;
 import net.sourceforge.squirrel_sql.fw.util.log.LoggerController;
 
 import java.awt.*;
+import java.util.Map;
 
 public class SplashStringWriter
 {
@@ -43,6 +44,14 @@ public class SplashStringWriter
       _maxNumberOffCallsToWriteUpperLine = maxNumberOffCallsToWriteUpperLine;
 
       _graphics = _splashScreen.createGraphics();
+
+      // AWT Desktop Properties – Desktop Font Rendering Hints
+      // https://docs.oracle.com/en/java/javase/21/docs/api/java.desktop/java/awt/doc-files/DesktopProperties.html
+      Map<?, ?> textAAHints = (Map<?, ?>) Toolkit.getDefaultToolkit()
+            .getDesktopProperty("awt.font.desktophints");
+      if (textAAHints != null) {
+         _graphics.addRenderingHints(textAAHints);
+      }
 
       _graphics.setFont(FONT);
 
