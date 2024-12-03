@@ -5,7 +5,6 @@ import net.sourceforge.squirrel_sql.fw.util.log.ILogger;
 import net.sourceforge.squirrel_sql.fw.util.log.LoggerController;
 
 import java.awt.*;
-import java.util.Map;
 
 public class SplashStringWriter
 {
@@ -45,12 +44,11 @@ public class SplashStringWriter
 
       _graphics = _splashScreen.createGraphics();
 
-      // AWT Desktop Properties – Desktop Font Rendering Hints
-      // https://docs.oracle.com/en/java/javase/21/docs/api/java.desktop/java/awt/doc-files/DesktopProperties.html
-      Map<?, ?> textAAHints = (Map<?, ?>) Toolkit.getDefaultToolkit()
-            .getDesktopProperty("awt.font.desktophints");
-      if (textAAHints != null) {
-         _graphics.addRenderingHints(textAAHints);
+      if (!System.getProperty("squirrelsql.splashTextAntialiasing", "true")
+                 .equalsIgnoreCase("false"))
+      {
+         _graphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
+                                    RenderingHints.VALUE_TEXT_ANTIALIAS_GASP);
       }
 
       _graphics.setFont(FONT);
