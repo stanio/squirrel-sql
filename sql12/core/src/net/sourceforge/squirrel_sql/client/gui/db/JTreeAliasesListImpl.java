@@ -38,6 +38,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
+import javax.swing.tree.TreeSelectionModel;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.datatransfer.DataFlavor;
@@ -95,7 +96,6 @@ public class JTreeAliasesListImpl implements IAliasesList, IAliasTreeInterface
 
       root.setUserObject(new AliasFolder("AliasRootNode", AliasFolder.NO_COLOR_RGB));
 
-      _tree.getSelectionModel().setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
       _tree.setToolTipText("init");
 
       _aliasDragState = new AliasDragState(_tree);
@@ -150,7 +150,8 @@ public class JTreeAliasesListImpl implements IAliasesList, IAliasTreeInterface
 
       final KeyStroke enterKeyPress = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0);
       _tree.getInputMap().put(enterKeyPress, PRIMARY_ACTION_KEY);
-
+      _tree.getSelectionModel()
+            .setSelectionMode(TreeSelectionModel.DISCONTIGUOUS_TREE_SELECTION);
       if (selectionListener != null)
       {
          _tree.addPropertyChangeListener(JTree.LEAD_SELECTION_PATH_PROPERTY,

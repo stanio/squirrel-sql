@@ -81,7 +81,7 @@ public class JListAliasesListImpl extends BaseList<SQLAlias> implements IAliases
 
 		final KeyStroke enterKeyPress = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0);
 		getList().getInputMap().put(enterKeyPress, PRIMARY_ACTION_KEY);
-
+		getList().setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 		if (selectionListener != null)
 		{
 			getList().addListSelectionListener(evt ->
