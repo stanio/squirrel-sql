@@ -40,7 +40,7 @@ import java.awt.event.MouseEvent;
  *
  * @author <A HREF="mailto:colbell@users.sourceforge.net">Colin Bell</A>
  */
-public class JListAliasesListImpl extends BaseList implements IAliasesList
+public class JListAliasesListImpl extends BaseList<SQLAlias> implements IAliasesList
 {
    private static final String PREF_KEY_SELECTED_ALIAS_INDEX = "Squirrel.selAliasIndex";
 
@@ -157,7 +157,7 @@ public class JListAliasesListImpl extends BaseList implements IAliasesList
     */
 	public SQLAlias getSelectedAlias(MouseEvent evt)
 	{
-		return (SQLAlias)getList().getSelectedValue();
+		return getList().getModel().getElementAt(getList().getLeadSelectionIndex());
 	}
 
    public void sortAliases()
@@ -187,7 +187,7 @@ public class JListAliasesListImpl extends BaseList implements IAliasesList
 
    public void deleteSelected()
    {
-      SQLAlias toDel = (SQLAlias) getList().getSelectedValue();
+      SQLAlias toDel = getList().getSelectedValue();
 
       if (null != toDel)
       {
@@ -210,7 +210,7 @@ public class JListAliasesListImpl extends BaseList implements IAliasesList
    {
       if(null != getList().getSelectedValue())
       {
-         AliasWindowManager.showModifyAliasInternalFrame((SQLAlias) getList().getSelectedValue());
+         AliasWindowManager.showModifyAliasInternalFrame(getList().getSelectedValue());
       }
    }
 
@@ -238,7 +238,7 @@ public class JListAliasesListImpl extends BaseList implements IAliasesList
 		final int idx = getList().locationToIndex(evt.getPoint());
 		if (idx != -1)
 		{
-			tip = ((SQLAlias)getList().getModel().getElementAt(idx)).getName();
+			tip = getList().getModel().getElementAt(idx).getName();
 		}
 		else
 		{

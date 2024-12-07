@@ -13,11 +13,11 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import net.sourceforge.squirrel_sql.fw.props.Props;
 
-public abstract class BaseList implements IBaseList
+public abstract class BaseList<T> implements IBaseList
 {
    private ArrayList<ListDataListener> _listeners = new ArrayList<>();
 
-   private JList _list = new JList()
+   private JList<T> _list = new JList<>()
    {
       public String getToolTipText(MouseEvent event)
       {
@@ -27,7 +27,7 @@ public abstract class BaseList implements IBaseList
    private JScrollPane _comp = new JScrollPane(_list);
 
 
-   public BaseList(SortedListModel sortedListModel, IApplication app)
+   public BaseList(SortedListModel<T> sortedListModel, IApplication app)
    {
       _list.setModel(sortedListModel);
       getList().getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -77,7 +77,7 @@ public abstract class BaseList implements IBaseList
       Props.putInt(getSelIndexPrefKey(), getList().getSelectedIndex());
    }
 
-   protected JList getList()
+   protected JList<T> getList()
    {
       return _list;
    }

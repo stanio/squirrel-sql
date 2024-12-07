@@ -22,6 +22,7 @@ import net.sourceforge.squirrel_sql.client.IApplication;
 import net.sourceforge.squirrel_sql.client.preferences.SquirrelPreferences;
 import net.sourceforge.squirrel_sql.client.resources.SquirrelResources;
 import net.sourceforge.squirrel_sql.fw.sql.ISQLDriver;
+import net.sourceforge.squirrel_sql.fw.sql.SQLDriver;
 import net.sourceforge.squirrel_sql.fw.util.StringManager;
 import net.sourceforge.squirrel_sql.fw.util.StringManagerFactory;
 
@@ -36,7 +37,7 @@ import java.beans.PropertyChangeListener;
  *
  * @author <A HREF="mailto:colbell@users.sourceforge.net">Colin Bell</A>
  */
-public class DriversList extends BaseList implements IDriversList
+public class DriversList extends BaseList<SQLDriver> implements IDriversList
 {
    private static final String PREF_KEY_SELECTED_DRIVER_INDEX = "Squirrel.selDriverIndex";
 
@@ -117,7 +118,7 @@ public class DriversList extends BaseList implements IDriversList
 	 */
 	public ISQLDriver getSelectedDriver()
 	{
-		return (ISQLDriver)getList().getSelectedValue();
+		return getList().getSelectedValue();
 	}
 
 	/**
@@ -132,7 +133,7 @@ public class DriversList extends BaseList implements IDriversList
 		final int idx = getList().locationToIndex(evt.getPoint());
 		if (idx != -1)
 		{
-			tip = ((ISQLDriver)getList().getModel().getElementAt(idx)).getName();
+			tip = getList().getModel().getElementAt(idx).getName();
 		}
 		else
 		{
