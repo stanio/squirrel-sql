@@ -2,7 +2,9 @@ package net.sourceforge.squirrel_sql.client.gui.db;
 
 import net.sourceforge.squirrel_sql.client.IApplication;
 import net.sourceforge.squirrel_sql.client.Main;
+import net.sourceforge.squirrel_sql.client.action.ActionCollection;
 import net.sourceforge.squirrel_sql.client.gui.WindowManager;
+import net.sourceforge.squirrel_sql.client.mainframe.action.ConnectToAliasAction;
 import net.sourceforge.squirrel_sql.fw.util.StringManager;
 import net.sourceforge.squirrel_sql.fw.util.StringManagerFactory;
 import net.sourceforge.squirrel_sql.fw.util.StringUtilities;
@@ -57,6 +59,13 @@ public class AliasesList implements IToogleableAliasesList
       AliasesListModel listModel = new AliasesListModel(app);
       _jListImpl= new JListAliasesListImpl(app, listModel, this::onAliasSelected);
       _jTreeImpl = new JTreeAliasesListImpl(app, listModel, this::onAliasSelected);
+   }
+
+   public void installActions(ActionCollection actions)
+   {
+      Action connectAction = actions.get(ConnectToAliasAction.class);
+      _jListImpl.installPrimaryAction(connectAction);
+      _jTreeImpl.installPrimaryAction(connectAction);
    }
 
    private void onAliasSelected(SQLAlias item)

@@ -23,6 +23,8 @@ import java.awt.event.MouseEvent;
 
 public interface IAliasesList extends IBaseList
 {
+   String PRIMARY_ACTION_KEY = "connectToAlias";
+
 	/**
 	 * Return the <TT>SQLAlias</TT> that is currently selected.
     * @param evt

@@ -138,12 +138,18 @@ public class JTreeAliasesListImpl implements IAliasesList, IAliasTreeInterface
 
       _aliasSortState = new AliasSortState(_tree);
 
+      final KeyStroke enterKeyPress = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0);
+      _tree.getInputMap().put(enterKeyPress, PRIMARY_ACTION_KEY);
+
       if (selectionListener != null)
       {
          _tree.addPropertyChangeListener(JTree.LEAD_SELECTION_PATH_PROPERTY,
                                          evt -> selectionListener.selectionChanged(getLeadSelectionValue()));
-         _tree.addKeyListener(selectionListener.getActionKeyListener(this));
       }
+   }
+
+   void installPrimaryAction(Action action) {
+      _tree.getActionMap().put(PRIMARY_ACTION_KEY, action);
    }
 
    private void onKeyTyped(KeyEvent e)

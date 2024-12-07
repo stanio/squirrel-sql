@@ -78,10 +78,12 @@ public class JListAliasesListImpl extends BaseList<SQLAlias> implements IAliases
 			}
 		});
 
+		final KeyStroke enterKeyPress = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0);
+		getList().getInputMap().put(enterKeyPress, PRIMARY_ACTION_KEY);
+
 		if (selectionListener != null)
 		{
 			getList().addListSelectionListener(evt -> selectionListener.selectionChanged(getLeadSelectionValue()));
-			getList().addKeyListener(selectionListener.getActionKeyListener(this));
 		}
 
 		getList().addKeyListener(new KeyAdapter()
@@ -92,6 +94,10 @@ public class JListAliasesListImpl extends BaseList<SQLAlias> implements IAliases
 				onKeyTyped(e);
 			}
 		});
+	}
+
+	void installPrimaryAction(Action action) {
+		getList().getActionMap().put(PRIMARY_ACTION_KEY, action);
 	}
 
 	private void onKeyTyped(KeyEvent e)

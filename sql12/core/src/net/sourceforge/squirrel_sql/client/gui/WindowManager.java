@@ -886,6 +886,8 @@ public class WindowManager
 
 		actions.add(new ViewInAliasesAction());
 
+		al.installActions(actions);
+
       return new AliasesListInternalFrame(_app, al);
 
    }
