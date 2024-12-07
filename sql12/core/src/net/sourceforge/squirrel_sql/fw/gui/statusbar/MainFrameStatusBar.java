@@ -25,8 +25,8 @@ import net.sourceforge.squirrel_sql.fw.gui.GUIUtils;
 import net.sourceforge.squirrel_sql.fw.gui.TimePanel;
 
 import javax.swing.JComponent;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -41,7 +41,7 @@ public class MainFrameStatusBar extends JPanel
 	private Font _font;
 
 	private final GridBagConstraints _gbc = new GridBagConstraints();
-	private JTextField _textLbl = new JTextField();
+	private JLabel _textLbl = new JLabel();
 
 
 	public MainFrameStatusBar(IApplication app)
@@ -60,8 +60,6 @@ public class MainFrameStatusBar extends JPanel
 		_gbc.gridy = 0;
 		_gbc.gridx = 0;
 
-		_textLbl.setEditable(false);
-		GUIUtils.inheritBackground(_textLbl);
 		addJComponent(_textLbl);
 
 		// Any other components are on the right.
@@ -102,7 +100,8 @@ public class MainFrameStatusBar extends JPanel
 	 * @throws	IllegalArgumentException
 	 *			Thrown if <TT>null</TT> <TT>Font</TT> passed.
 	 */
-	public void setFont(Font font)
+	@Override
+   public void setFont(Font font)
 	{
 		super.setFont(font);
 		_font = font;
