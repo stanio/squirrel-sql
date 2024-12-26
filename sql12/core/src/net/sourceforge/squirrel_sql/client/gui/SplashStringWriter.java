@@ -15,7 +15,7 @@ public class SplashStringWriter
    private boolean _hasTwoLines;
    private int _maxNumberOffCallsToWriteUpperLine;
    private static final Font FONT = new Font(Font.DIALOG, Font.BOLD, 14);
-   private static final Color BG = new Color(171, 176, 195);
+   private static final Color BG = new Color(174, 176, 197);
    private static final Color FG_UPPER = Color.black;
    private static final Color FG_PROGRESS = new Color(74, 91, 153);
    private static final Color FG_LOWER = new Color(74, 91, 153);
