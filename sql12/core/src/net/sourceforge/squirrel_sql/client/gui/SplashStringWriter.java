@@ -171,4 +171,9 @@ public class SplashStringWriter
 
       return s;
    }
+
+   public void close()
+   {
+      _graphics.dispose();
+   }
 }

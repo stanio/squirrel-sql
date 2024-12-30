@@ -282,6 +282,11 @@ public class Application implements IApplication
 
       executeStartupTasks(splash, args);
 
+      if (splash != null)
+      {
+         splash.close();
+      }
+
       if( args.detectLongRunningSwingEDTEvents() )
       {
          EventDispatchThreadWatcher.start();

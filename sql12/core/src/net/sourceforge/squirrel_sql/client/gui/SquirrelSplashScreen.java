@@ -80,4 +80,12 @@ public class SquirrelSplashScreen
          }
       };
    }
+
+   public void close()
+   {
+      if (_splashStringWriter != null)
+      {
+         _splashStringWriter.close();
+      }
+   }
 }
