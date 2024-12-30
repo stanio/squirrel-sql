@@ -11,9 +11,10 @@ public class SplashStringWriter
    private final static ILogger s_log = LoggerController.createLogger(SplashStringWriter.class);
 
 
-   private SplashScreen _splashScreen;
-   private boolean _hasTwoLines;
-   private int _maxNumberOffCallsToWriteUpperLine;
+   private final SplashScreen _splashScreen;
+   private final Dimension _splashSize;
+   private final boolean _hasTwoLines;
+   private final int _maxNumberOffCallsToWriteUpperLine;
    private static final Font FONT = new Font(Font.DIALOG, Font.BOLD, 14);
    private static final Color BG = new Color(174, 176, 197);
    private static final Color FG_UPPER = Color.black;
@@ -35,26 +36,24 @@ public class SplashStringWriter
    private String _upperLine;
    private int _paintAreaHeight;
 
+   private int _progressWidth;
 
    public SplashStringWriter(SplashScreen splashScreen, boolean hasTwoLines, int maxNumberOffCallsToWriteUpperLine)
    {
       _splashScreen = splashScreen;
+      _splashSize = splashScreen.getSize();
       _hasTwoLines = hasTwoLines;
       _maxNumberOffCallsToWriteUpperLine = maxNumberOffCallsToWriteUpperLine;
 
       _graphics = _splashScreen.createGraphics();
 
-      if (!System.getProperty("squirrelsql.splashTextAntialiasing", "true")
-                 .equalsIgnoreCase("false"))
-      {
-         _graphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
-                                    RenderingHints.VALUE_TEXT_ANTIALIAS_GASP);
-      }
+      _graphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
+                                 RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 
       _graphics.setFont(FONT);
 
 
-      _yLower = _splashScreen.getSize().height - Y_DIST;
+      _yLower = _splashSize.height - Y_DIST;
 
       FontMetrics fontMetrics = _graphics.getFontMetrics(FONT);
 
@@ -71,30 +70,30 @@ public class SplashStringWriter
 
       _yProgressbar = _yUpper - fontMetrics.getHeight() - 2;
 
-      _maxWidhtProgressbar = _splashScreen.getSize().width - 2 * X_DIST;
+      _maxWidhtProgressbar = _splashSize.width - 2 * X_DIST;
 
       _heightProgressbar = fontMetrics.getHeight() + 10;
 
-
-
-      _graphics.setColor(FG_UPPER);
-
       paintCopyrigthAndVersion(fontMetrics);
+
+      _splashScreen.update();
    }
 
    private void paintCopyrigthAndVersion(FontMetrics fontMetrics)
    {
+      _graphics.setColor(FG_UPPER);
+
       String[] splits = Version.getCopyrightStatement().split("\\n");
 
-      int xVers = (_splashScreen.getSize().width - fontMetrics.getStringBounds(Version.getVersion(), _graphics).getBounds().width) / 2;
-      int yVers = _splashScreen.getSize().height - (_paintAreaHeight + ((splits.length + 1) * (fontMetrics.getHeight() + 5)));
+      int xVers = (_splashSize.width - fontMetrics.getStringBounds(Version.getVersion(), _graphics).getBounds().width) / 2;
+      int yVers = _splashSize.height - (_paintAreaHeight + ((splits.length + 1) * (fontMetrics.getHeight() + 5)));
       _graphics.drawString(Version.getVersion(), xVers, yVers);
 
 
       for (int i = 0; i < splits.length; i++)
       {
-         int xSpilt = (_splashScreen.getSize().width - fontMetrics.getStringBounds(splits[i], _graphics).getBounds().width) / 2;
-         int ySplit = _splashScreen.getSize().height - (_paintAreaHeight + ((splits.length - i) * (fontMetrics.getHeight() + 5)));
+         int xSpilt = (_splashSize.width - fontMetrics.getStringBounds(splits[i], _graphics).getBounds().width) / 2;
+         int ySplit = _splashSize.height - (_paintAreaHeight + ((splits.length - i) * (fontMetrics.getHeight() + 5)));
          _graphics.drawString(splits[i], xSpilt, ySplit);
       }
    }
@@ -127,7 +126,9 @@ public class SplashStringWriter
 
    private void paintStrings()
    {
-      write(_upperLine, _yUpper, FG_UPPER);
+      _graphics.setClip(X_PROGRESSBAR, _yProgressbar, _progressWidth,  _heightProgressbar);
+      write(_upperLine, _yUpper, BG);
+      _graphics.setClip(0, 0, _splashSize.width, _splashSize.height);
 
       if(_hasTwoLines)
       {
@@ -137,6 +138,8 @@ public class SplashStringWriter
 
    private void paintProgress()
    {
+      write(_upperLine, _yUpper, FG_PROGRESS);
+
       if(_maxNumberOffCallsToWriteUpperLine < _numberOffCallsToWriteUpperLine + 1)
       {
          String msg = "Programmer: Please increase _maxNumberOffCallsToWriteUpperLine to make the Progressbar work right";
@@ -147,8 +150,9 @@ public class SplashStringWriter
 
       int width = (int)
             (
-                  (double)(_maxWidhtProgressbar) * ((double)(_numberOffCallsToWriteUpperLine)) / ((double)(_maxNumberOffCallsToWriteUpperLine))
+                  _maxWidhtProgressbar * ((double) _numberOffCallsToWriteUpperLine / _maxNumberOffCallsToWriteUpperLine)
             );
+      _progressWidth = width;
 
       _graphics.setColor(FG_PROGRESS);
       _graphics.fillRect(X_PROGRESSBAR, _yProgressbar, width,  _heightProgressbar);
@@ -157,7 +161,7 @@ public class SplashStringWriter
    private void clear()
    {
       _graphics.setColor(BG);
-      _graphics.fillRect(0, _splashScreen.getSize().height - _paintAreaHeight, _splashScreen.getSize().width, _paintAreaHeight);
+      _graphics.fillRect(0, _splashSize.height - _paintAreaHeight, _splashSize.width, _paintAreaHeight);
    }
 
 
