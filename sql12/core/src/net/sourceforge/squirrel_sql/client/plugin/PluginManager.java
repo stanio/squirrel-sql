@@ -466,6 +466,7 @@ public class PluginManager implements IPluginManager
 			}
 
 		});
+		_pluginsClassLoader.removeClassLoaderListener(classLoaderListener);
 	}
 
 	private void checkPlugin(File pluginFile, Map<String, PluginStatus> pluginStatuses, List<URL> pluginUrls,

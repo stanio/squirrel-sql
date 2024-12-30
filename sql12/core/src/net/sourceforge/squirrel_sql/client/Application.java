@@ -946,6 +946,7 @@ public class Application implements IApplication
 			{
 				_pluginManager.loadPlugins();
 			}
+			_pluginManager.setClassLoaderListener(null);
 		}
 
       // Final argument validation after all plugins have been loaded.  This will exit if there is an unrecognized argument in the list.
