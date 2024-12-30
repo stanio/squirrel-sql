@@ -284,7 +284,7 @@ public class Application implements IApplication
 
       if( args.detectLongRunningSwingEDTEvents() )
       {
-         new EventDispatchThreadWatcher();
+         EventDispatchThreadWatcher.start();
       }
    }
 

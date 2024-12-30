@@ -8,52 +8,34 @@ import java.io.StringWriter;
 import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadInfo;
 import java.lang.management.ThreadMXBean;
-import java.util.Timer;
-import java.util.TimerTask;
 
 
-public class EventQueueWorkingCheck implements Runnable
+final class EventQueueWorkingCheck implements Runnable
 {
 
-   public static final int MAX_ACCEPTED_EDT_DELAY_TIME = 2000;
+   static final int MAX_ACCEPTED_EDT_DELAY_TIME = 2000;
 
    private static ILogger s_log = LoggerController.createLogger(EventQueueWorkingCheck.class);
 
-   private final Timer m_timer;
+   private final long m_startTime;
 
-   public EventQueueWorkingCheck()
+   EventQueueWorkingCheck()
    {
-      m_timer = new Timer(true);
-
-      TimerTask task = new TimerTask()
-      {
-         @Override
-         public void run()
-         {
-            onTimerTaskReached();
-         }
-      };
-
-      m_timer.schedule(task, MAX_ACCEPTED_EDT_DELAY_TIME);
-   }
-
-   private void onTimerTaskReached()
-   {
-      writeLog();
+      m_startTime = System.currentTimeMillis();
    }
 
    @Override
    public void run()
    {
-      m_timer.cancel();
+      if (System.currentTimeMillis() - m_startTime > MAX_ACCEPTED_EDT_DELAY_TIME)
+         writeLog();
    }
 
-   public void writeLog()
+   private void writeLog()
    {
       StringWriter sw = new StringWriter();
-      PrintWriter pw = new PrintWriter(sw);
 
-      try
+      try (PrintWriter pw = new PrintWriter(sw))
       {
          ThreadMXBean threadMXBean = ManagementFactory.getThreadMXBean();
          ThreadInfo[] threadInfo = threadMXBean.getThreadInfo(threadMXBean.getAllThreadIds(), 1000);
@@ -86,11 +68,6 @@ public class EventQueueWorkingCheck implements Runnable
          pw.println("-- STACK DUMP END");
          pw.println("----------------------------------------------------------------------------------------------------------------");
 
-      }
-      finally
-      {
-         pw.flush();
-         pw.close();
       }
 
       s_log.warn(sw.toString());

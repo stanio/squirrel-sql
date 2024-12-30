@@ -4,41 +4,42 @@ import javax.swing.*;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class EventDispatchThreadWatcher
+public final class EventDispatchThreadWatcher
 {
+   private static Timer s_timer;
 
-   public EventDispatchThreadWatcher()
+   private EventDispatchThreadWatcher()
    {
-
-      SwingUtilities.invokeLater(
-         new Runnable()
-         {
-            public void run()
-            {
-               init();
-            }
-         });
+      // No instances.
    }
 
-   private void init()
+   public static synchronized void start()
    {
-      Timer t = new Timer(true);
+      if (s_timer != null)
+      {
+         return;
+      }
+      s_timer = new Timer("EventDispatchThreadWatcher", true);
 
       TimerTask task = new TimerTask()
       {
          @Override
          public void run()
          {
-            sendEventQueueWorkingCheck();
+            SwingUtilities.invokeLater(new EventQueueWorkingCheck());
          }
       };
 
-      t.schedule(task, 1000,1000);
+      s_timer.schedule(task, 1000, 1000);
    }
 
-   private void sendEventQueueWorkingCheck()
+   public static synchronized void stop()
    {
-      SwingUtilities.invokeLater(new EventQueueWorkingCheck());
+      if (s_timer != null)
+      {
+         s_timer.cancel();
+         s_timer = null;
+      }
    }
 
 
